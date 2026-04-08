@@ -1,5 +1,5 @@
 import axios from "axios"
-import { get, post } from "./api_helper"
+import { del, get, post } from "./api_helper"
 import * as url from "./url_helper"
 
 // Gets the logged in user data from local session
@@ -137,6 +137,20 @@ const saveUser = async payload => {
   }
 }
 
+const deleteUserById = async id => {
+  try {
+    return await del("/User/Delete", {
+      params: { id },
+    })
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ||
+      error?.message ||
+      "User delete failed"
+    )
+  }
+}
+
 // postForgetPwd
 const postFakeForgetPwd = data => post(url.POST_FAKE_PASSWORD_FORGET, data);
 
@@ -203,5 +217,6 @@ export {
   getUsersPages,
   getUserById,
   saveUser,
+  deleteUserById,
   buildPageParams,
 }

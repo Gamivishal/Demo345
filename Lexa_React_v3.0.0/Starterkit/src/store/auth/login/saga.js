@@ -11,6 +11,7 @@ import {
   postJwtLogin,
   getMenuPages,
 } from "../../../helpers/fakebackend_helper";
+import { showSuccess } from "../../../Pop_show/alertService";
 
 const fireBaseBackend = getFirebaseBackend();
 
@@ -24,6 +25,9 @@ function* loginUser({ payload: { user, history } }) {
         userName,
         user.password
       );
+      if (response?.statusCode === 1 || response?.isSuccess) {
+        yield call(showSuccess, response?.message || "Login successful")
+      }
       yield put(loginSuccess(response));
       history('/dashboard');
     } else if (process.env.REACT_APP_DEFAULTAUTH === "jwt") {
@@ -32,6 +36,9 @@ function* loginUser({ payload: { user, history } }) {
         userName,
         password: user.password,
       });
+      if (response?.statusCode === 1 || response?.isSuccess) {
+        yield call(showSuccess, response?.message || "Login successful")
+      }
       localStorage.setItem("authUser", JSON.stringify(response));
       if (response?.accessToken || response?.token || response?.data) {
         localStorage.setItem(
@@ -53,6 +60,8 @@ function* loginUser({ payload: { user, history } }) {
       if (!(response?.isSuccess && response?.statusCode === 1 && response?.data)) {
         throw response?.message || "Invalid username or password";
       }
+
+      yield call(showSuccess, response?.message || "Login successful")
 
       const loginPayload = {
         userName,

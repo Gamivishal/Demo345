@@ -13,7 +13,7 @@ import { useFormik } from "formik";
 import withRouter from 'components/Common/withRouter';
 
 // Alert Service
-import { showSuccess, showError } from "../../Pop_show/alertService";
+import { showError } from "../../Pop_show/alertService";
 
 // actions
 import { apiError, loginUser, socialLogin } from "../../store/actions";
@@ -35,7 +35,6 @@ const Login = props => {
       password: Yup.string().required("Please Enter Your Password"),
     }),
     onSubmit: (values) => {
-      showSuccess("Logging in...");
       dispatch(loginUser(values, props.router.navigate));
     }
   });

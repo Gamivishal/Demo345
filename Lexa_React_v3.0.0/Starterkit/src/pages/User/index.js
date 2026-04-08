@@ -5,7 +5,8 @@ import { connect } from "react-redux"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 
 import { setBreadcrumbItems } from "../../store/actions"
-import { getUserById, getUsersPages, saveUser } from "../../helpers/fakebackend_helper"
+import { deleteUserById, getUserById, getUsersPages, saveUser } from "../../helpers/fakebackend_helper"
+import { showConfirm, showError, showSuccess } from "../../Pop_show/alertService"
 import UserForm from "./UserForm"
 
 const Users = props => {
@@ -19,6 +20,7 @@ const Users = props => {
 
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [deletingId, setDeletingId] = useState(0)
   const [error, setError] = useState("")
   const [formError, setFormError] = useState("")
   const [rows, setRows] = useState([])
@@ -161,8 +163,14 @@ const Users = props => {
               className="p-0 text-danger"
               title="Delete"
               type="button"
+              disabled={deletingId === item.id}
+              onClick={() => handleDelete(item.id)}
             >
-              <i className="mdi mdi-trash-can-outline font-size-18" />
+              {deletingId === item.id ? (
+                <Spinner size="sm" />
+              ) : (
+                <i className="mdi mdi-trash-can-outline font-size-18" />
+              )}
             </Button>
           </div>
         ),
@@ -176,6 +184,30 @@ const Users = props => {
       ...previous,
       [name]: type === "checkbox" ? checked : value,
     }))
+  }
+
+  const handleDelete = async id => {
+    const isConfirmed = await showConfirm("Are you sure you want to delete this user?", "Delete", "Cancel")
+    if (!isConfirmed) {
+      return
+    }
+
+    setDeletingId(id)
+    try {
+      const response = await deleteUserById(id)
+      if (response?.statusCode === 1) {
+        await showSuccess(response?.message || "User deleted successfully")
+        await loadUsers()
+        return
+      }
+
+      throw new Error(response?.message || "Failed to delete user")
+    } catch (err) {
+      const errorMessage = err?.message || err || "Failed to delete user"
+      await showError(errorMessage)
+    } finally {
+      setDeletingId(0)
+    }
   }
 
   const handleSubmit = async event => {
@@ -202,13 +234,17 @@ const Users = props => {
       }
 
       const response = await saveUser(payload)
-      if (!(response?.isSuccess && response?.statusCode === 1)) {
-        throw new Error(response?.message || "Failed to save user")
+      if (response?.statusCode === 1) {
+        await showSuccess(response?.message || "Saved successfully")
+        navigate("/users")
+        return
       }
 
-      navigate("/users")
+      throw new Error(response?.message || "Failed to save user")
     } catch (err) {
-      setFormError(err?.message || err || "Failed to save user")
+      const errorMessage = err?.message || err || "Failed to save user"
+      await showError(errorMessage)
+      setFormError(errorMessage)
     } finally {
       setSaving(false)
     }
