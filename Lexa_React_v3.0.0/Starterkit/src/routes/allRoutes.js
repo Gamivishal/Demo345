@@ -34,6 +34,8 @@ const userRoutes = [
   { path: "/profile", component: <UserProfile /> },
 
   { path: "/users", component: <Users /> },
+  { path: "/users/manage", component: <Users /> },
+  { path: "/users/manage/:id", component: <Users /> },
 
   { path: "/pages-blank", component: <PagesBlank /> },
 

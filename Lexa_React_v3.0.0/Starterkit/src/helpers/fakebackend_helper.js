@@ -111,6 +111,32 @@ const getUsersPages = async (params = {}) => {
   }
 };
 
+const getUserById = async id => {
+  try {
+    return await get("/User/GetById", {
+      params: { id },
+    })
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ||
+      error?.message ||
+      "User fetch by id failed"
+    )
+  }
+}
+
+const saveUser = async payload => {
+  try {
+    return await post("/User/Add", payload)
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ||
+      error?.message ||
+      "User save failed"
+    )
+  }
+}
+
 // postForgetPwd
 const postFakeForgetPwd = data => post(url.POST_FAKE_PASSWORD_FORGET, data);
 
@@ -175,5 +201,7 @@ export {
   postJwtProfile,
   getMenuPages,
   getUsersPages,
+  getUserById,
+  saveUser,
   buildPageParams,
 }
