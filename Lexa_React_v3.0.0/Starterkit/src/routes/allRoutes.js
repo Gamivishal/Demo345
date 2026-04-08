@@ -19,6 +19,7 @@ import LockScreen from "../pages/AuthenticationInner/auth-lock-screen"
 
 // Dashboard
 import Dashboard from "../pages/Dashboard/index"
+import Users from "../pages/User"
 
 
 //Extra Pages
@@ -31,6 +32,8 @@ const userRoutes = [
 
   // // //profile
   { path: "/profile", component: <UserProfile /> },
+
+  { path: "/users", component: <Users /> },
 
   { path: "/pages-blank", component: <PagesBlank /> },
 

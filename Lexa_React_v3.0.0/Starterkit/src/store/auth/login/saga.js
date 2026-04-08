@@ -9,6 +9,7 @@ import { getFirebaseBackend } from "../../../helpers/firebase_helper";
 import {
   postFakeLogin,
   postJwtLogin,
+  getMenuPages,
 } from "../../../helpers/fakebackend_helper";
 
 const fireBaseBackend = getFirebaseBackend();
@@ -71,6 +72,20 @@ function* loginUser({ payload: { user, history } }) {
         );
       }
 
+      try {
+        const menuResponse = yield call(getMenuPages);
+        if (menuResponse?.isSuccess && menuResponse?.statusCode === 1) {
+          localStorage.setItem(
+            "menuPages",
+            JSON.stringify(menuResponse?.data?.data || [])
+          );
+        } else {
+          localStorage.removeItem("menuPages");
+        }
+      } catch (menuError) {
+        localStorage.removeItem("menuPages");
+      }
+
       yield put(loginSuccess(loginPayload));
       history('/dashboard');
     }
@@ -83,6 +98,7 @@ function* logoutUser({ payload: { history } }) {
   try {
     localStorage.removeItem("authUser");
     localStorage.removeItem("data");
+    localStorage.removeItem("menuPages");
 
     if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
       const response = yield call(fireBaseBackend.logout);

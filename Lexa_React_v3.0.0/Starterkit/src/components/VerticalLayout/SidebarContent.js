@@ -1,5 +1,5 @@
 import PropTypes from "prop-types"
-import React, { useCallback, useEffect, useRef } from "react"
+import React, { useCallback, useEffect, useMemo, useRef } from "react"
 
 // //Import Scrollbar
 import SimpleBar from "simplebar-react"
@@ -136,12 +136,80 @@ const SidebarContent = props => {
     }
   }
 
+  const dynamicMenu = useMemo(() => {
+    try {
+      const menuRaw = localStorage.getItem("menuPages")
+      const menuList = menuRaw ? JSON.parse(menuRaw) : []
+      if (!Array.isArray(menuList) || !menuList.length) {
+        return []
+      }
+
+      const activeItems = menuList
+        .filter(item => item && item.isActive && !item.isDeleted)
+        .sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0))
+
+      const parents = activeItems.filter(item => Number(item.parentId) === 0)
+
+      return parents.map(parent => ({
+        ...parent,
+        children: activeItems.filter(
+          child => Number(child.parentId) === Number(parent.id)
+        ),
+      }))
+    } catch (error) {
+      return []
+    }
+  }, [])
+
+  const getDynamicMenuLink = child => {
+    const controller = (child?.controller || "").toLowerCase()
+    const name = (child?.name || "").toLowerCase()
+
+    if (controller === "user" || name === "users") {
+      return "/users"
+    }
+
+    if (child?.url && child.url !== "string") {
+      return child.url.startsWith("/") ? child.url : `/${child.url}`
+    }
+
+    return "/#"
+  }
+
   return (
     <React.Fragment>
       <SimpleBar style={{ maxHeight: "100%" }} ref={ref}>
         <div id="sidebar-menu">
           <ul className="metismenu list-unstyled" id="side-menu">
             <li className="menu-title">{props.t("Main")} </li>
+
+            {dynamicMenu.length > 0 && (
+              <>
+                <li className="menu-title">{props.t("Dynamic Menu")}</li>
+                {dynamicMenu.map(parent => (
+                  <li key={`dynamic-parent-${parent.id}`}>
+                    <Link
+                      to="/#"
+                      className={parent.children.length ? "has-arrow waves-effect" : "waves-effect"}
+                    >
+                      <i className="mdi mdi-folder-outline"></i>
+                      <span>{parent.name}</span>
+                    </Link>
+
+                    {parent.children.length > 0 && (
+                      <ul className="sub-menu">
+                        {parent.children.map(child => (
+                          <li key={`dynamic-child-${child.id}`}>
+                            <Link to={getDynamicMenuLink(child)}>{child.name}</Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                ))}
+              </>
+            )}
+
             <li>
               <Link to="/dashboard" className="waves-effect">
                 <i className="mdi mdi-view-dashboard"></i>

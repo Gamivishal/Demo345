@@ -1,5 +1,5 @@
 import axios from "axios"
-import { post } from "./api_helper"
+import { get, post } from "./api_helper"
 import * as url from "./url_helper"
 
 // Gets the logged in user data from local session
@@ -13,6 +13,17 @@ const getLoggedInUser = () => {
 const isUserAuthenticated = () => {
   return getLoggedInUser() !== null;
 };
+
+const buildPageParams = (overrides = {}) => {
+  return {
+    start: 0,
+    length: 10,
+    sortColumn: "",
+    sortColumnDir: "desc",
+    searchValue: "",
+    ...overrides,
+  }
+}
 
 // Register Method
 const postFakeRegister = data => {
@@ -68,6 +79,34 @@ const postFakeLogin = async data => {
       error?.response?.data?.message ||
       error?.message ||
       "Login API call failed"
+    )
+  }
+};
+
+const getMenuPages = async () => {
+  try {
+    return await get("/Menu/GetAllpage", {
+      params: buildPageParams({ length: 100 }),
+    })
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ||
+      error?.message ||
+      "Menu API call failed"
+    )
+  }
+};
+
+const getUsersPages = async (params = {}) => {
+  try {
+    return await get("/User/GetAllpage", {
+      params: buildPageParams(params),
+    })
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ||
+      error?.message ||
+      "Users API call failed"
     )
   }
 };
@@ -134,4 +173,7 @@ export {
   postJwtLogin,
   postJwtForgetPwd,
   postJwtProfile,
+  getMenuPages,
+  getUsersPages,
+  buildPageParams,
 }
