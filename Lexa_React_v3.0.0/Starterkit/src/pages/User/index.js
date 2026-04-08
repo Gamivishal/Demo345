@@ -5,7 +5,7 @@ import { connect } from "react-redux"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 
 import { setBreadcrumbItems } from "../../store/actions"
-import { deleteUserById, getUserById, getUsersPages, saveUser } from "../../helpers/fakebackend_helper"
+import { deleteUserById, getRoleNames, getUserById, getUsersPages, saveUser } from "../../helpers/fakebackend_helper"
 import { showConfirm, showError, showSuccess } from "../../Pop_show/alertService"
 import UserForm from "./UserForm"
 
@@ -23,6 +23,7 @@ const Users = props => {
   const [deletingId, setDeletingId] = useState(0)
   const [error, setError] = useState("")
   const [formError, setFormError] = useState("")
+  const [roleOptions, setRoleOptions] = useState([])
   const [rows, setRows] = useState([])
   const [formTitle, setFormTitle] = useState(isEditMode ? "Edit User" : "Create User")
   const [formData, setFormData] = useState({
@@ -72,6 +73,28 @@ const Users = props => {
     if (!isFormPage) {
       loadUsers()
     }
+  }, [isFormPage])
+
+  useEffect(() => {
+    const loadRoles = async () => {
+      if (!isFormPage) {
+        return
+      }
+
+      try {
+        const response = await getRoleNames()
+        if (response?.statusCode === 1 && Array.isArray(response?.data)) {
+          setRoleOptions(response.data)
+          return
+        }
+
+        throw new Error(response?.message || "Failed to load roles")
+      } catch (err) {
+        setFormError(err?.message || err || "Failed to load roles")
+      }
+    }
+
+    loadRoles()
   }, [isFormPage])
 
   useEffect(() => {
@@ -186,6 +209,13 @@ const Users = props => {
     }))
   }
 
+  const handleRoleChange = option => {
+    setFormData(previous => ({
+      ...previous,
+      roleId: option?.value ?? "",
+    }))
+  }
+
   const handleDelete = async id => {
     const isConfirmed = await showConfirm("Are you sure you want to delete this user?", "Delete", "Cancel")
     if (!isConfirmed) {
@@ -213,11 +243,6 @@ const Users = props => {
   const handleSubmit = async event => {
     event.preventDefault()
     setFormError("")
-
-    if (!formData.userName || !formData.password) {
-      setFormError("Please enter username and password")
-      return
-    }
 
     setSaving(true)
 
@@ -268,8 +293,10 @@ const Users = props => {
                 title={formTitle}
                 formError={formError}
                 formData={formData}
+                roleOptions={roleOptions}
                 saving={saving}
                 onChange={handleChange}
+                onRoleChange={handleRoleChange}
                 onSubmit={handleSubmit}
                 onClose={() => navigate("/users")}
               />

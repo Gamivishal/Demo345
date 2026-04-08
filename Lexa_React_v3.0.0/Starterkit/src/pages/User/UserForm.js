@@ -1,4 +1,5 @@
 import React from "react"
+import Select from "react-select"
 import {
   Alert,
   Button,
@@ -17,11 +18,20 @@ const UserForm = ({
   title,
   formError,
   formData,
+  roleOptions,
   saving,
   onChange,
+  onRoleChange,
   onSubmit,
   onClose,
 }) => {
+  const roleSelectOptions = (roleOptions || []).map(role => ({
+    value: role.id,
+    label: role.name,
+  }))
+
+  const selectedRole = roleSelectOptions.find(option => Number(option.value) === Number(formData.roleId)) || null
+
   return (
     <Card className="mb-4">
       <CardHeader className="bg-white d-flex align-items-center justify-content-between">
@@ -73,12 +83,14 @@ const UserForm = ({
             </Col>
             <Col md={6}>
               <Label>Role Id</Label>
-              <Input
-                name="roleId"
-                type="number"
-                value={formData.roleId}
-                onChange={onChange}
-                placeholder="Enter role id"
+              <Select
+                classNamePrefix="select2-selection"
+                placeholder="Select role"
+                options={roleSelectOptions}
+                value={selectedRole}
+                onChange={onRoleChange}
+                isSearchable
+                isClearable
               />
             </Col>
             <Col md={6} className="d-flex align-items-center mt-md-4 pt-md-2">

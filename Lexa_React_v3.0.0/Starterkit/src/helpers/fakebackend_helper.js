@@ -137,6 +137,18 @@ const saveUser = async payload => {
   }
 }
 
+const getRoleNames = async () => {
+  try {
+    return await get("/Dropdown/RoleName")
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ||
+      error?.message ||
+      "Role dropdown API call failed"
+    )
+  }
+}
+
 const deleteUserById = async id => {
   try {
     return await del("/User/Delete", {
@@ -216,6 +228,7 @@ export {
   getMenuPages,
   getUsersPages,
   getUserById,
+  getRoleNames,
   saveUser,
   deleteUserById,
   buildPageParams,
