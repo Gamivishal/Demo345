@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import { Container, Row,Col, Card, CardBody, Label, Form, Alert, Input, FormFeedback } from 'reactstrap';
 import logoDark from "../../assets/images/logo-dark.png";
@@ -12,8 +12,11 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 import withRouter from 'components/Common/withRouter';
 
+// Alert Service
+import { showSuccess, showError } from "../../Pop_show/alertService";
+
 // actions
-import { loginUser, socialLogin } from "../../store/actions";
+import { apiError, loginUser, socialLogin } from "../../store/actions";
 
 const Login = props => {
   document.title = "Login | Lexa - Responsive Bootstrap 5 Admin Dashboard";
@@ -32,6 +35,7 @@ const Login = props => {
       password: Yup.string().required("Please Enter Your Password"),
     }),
     onSubmit: (values) => {
+      showSuccess("Logging in...");
       dispatch(loginUser(values, props.router.navigate));
     }
   });
@@ -48,6 +52,14 @@ const Login = props => {
     const {
       error
   } = useSelector(LoginProperties);
+
+  // Alert Service Integration
+  useEffect(() => {
+    if (error) {
+      showError(error || "Login failed! Please try again.");
+      dispatch(apiError(""));
+    }
+  }, [error, dispatch]);
 
     const signIn = type => {
         dispatch(socialLogin(type, props.router.navigate));
