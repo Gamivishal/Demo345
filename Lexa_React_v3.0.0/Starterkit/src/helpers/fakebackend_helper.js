@@ -46,7 +46,31 @@ const postFakeRegister = data => {
 };
 
 // Login Method
-const postFakeLogin = data => post(url.POST_FAKE_LOGIN, data);
+const postFakeLogin = async data => {
+  const userName = data.userName || data.email || ""
+  const password = data.password || ""
+
+  if (!userName || !password) {
+    throw "Please enter username and password"
+  }
+
+  try {
+    const response = await post("/Auth/Login", null, {
+      params: {
+        userName,
+        password,
+      },
+    })
+
+    return response
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ||
+      error?.message ||
+      "Login API call failed"
+    )
+  }
+};
 
 // postForgetPwd
 const postFakeForgetPwd = data => post(url.POST_FAKE_PASSWORD_FORGET, data);

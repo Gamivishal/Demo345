@@ -23,13 +23,12 @@ const Login = props => {
   const validation = useFormik({
     // enableReinitialize : use this  flag when initial values needs to be changed
     enableReinitialize: true,
-
     initialValues: {
-      email: "admin@themesbrand.com" || '',
-      password: "123456" || '',
+      userName: "",
+      password: "",
     },
     validationSchema: Yup.object({
-      email: Yup.string().required("Please Enter Your Email"),
+      userName: Yup.string().required("Please Enter Your Username"),
       password: Yup.string().required("Please Enter Your Password"),
     }),
     onSubmit: (values) => {
@@ -91,19 +90,19 @@ const Login = props => {
                                         <div className="mb-3">
                                             <Label htmlFor="username">Username</Label>
                                             <Input
-                                              name="email"
+                                              name="userName"
                                               className="form-control"
-                                              placeholder="Enter email"
-                                              type="email"
+                                              placeholder="Enter username"
+                                              type="text"
                                               onChange={validation.handleChange}
                                               onBlur={validation.handleBlur}
-                                              value={validation.values.email || ""}
+                                              value={validation.values.userName || ""}
                                               invalid={
-                                                validation.touched.email && validation.errors.email ? true : false
+                                                validation.touched.userName && validation.errors.userName ? true : false
                                               }
                                             />
-                                            {validation.touched.email && validation.errors.email ? (
-                                              <FormFeedback type="invalid">{validation.errors.email}</FormFeedback>
+                                            {validation.touched.userName && validation.errors.userName ? (
+                                              <FormFeedback type="invalid">{validation.errors.userName}</FormFeedback>
                                             ) : null}
                                         </div>
                                         <div className="mb-3">

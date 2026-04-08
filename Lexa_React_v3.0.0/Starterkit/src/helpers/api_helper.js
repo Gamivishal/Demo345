@@ -1,18 +1,37 @@
 import axios from "axios";
-import accessToken from "./jwt-token-access/accessToken";
-
-//pass new generated access token here
-const token = accessToken;
 
 //apply base url for axios
-const API_URL = "";
+const API_URL = "https://localhost:7281/api";
 
 const axiosApi = axios.create({
   baseURL: API_URL,
 });
 
-axiosApi.defaults.headers.common["Authorization"] = token;
+axiosApi.interceptors.request.use(
+  config => {
+    const tokenData = localStorage.getItem("data");
+    const parsedData = tokenData ? JSON.parse(tokenData) : null;
+    const token = parsedData?.data;
 
+    config.headers = {
+      ...(config.headers || {}),
+    };
+
+    // Only attach auth header when a token exists.
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    // Content-Type is needed only for body requests.
+    const method = (config.method || "get").toLowerCase();
+    if (["post", "put", "patch", "delete"].includes(method)) {
+      config.headers["Content-Type"] = "application/json";
+    }
+
+    return config;
+  },
+  error => Promise.reject(error)
+);
 axiosApi.interceptors.response.use(
   (response) => response,
   (error) => Promise.reject(error)

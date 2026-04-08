@@ -15,37 +15,74 @@ const fireBaseBackend = getFirebaseBackend();
 
 function* loginUser({ payload: { user, history } }) {
   try {
+    const userName = user.userName || user.email;
+
     if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
       const response = yield call(
         fireBaseBackend.loginUser,
-        user.email,
+        userName,
         user.password
       );
       yield put(loginSuccess(response));
+      history('/dashboard');
     } else if (process.env.REACT_APP_DEFAULTAUTH === "jwt") {
       const response = yield call(postJwtLogin, {
-        email: user.email,
+        email: userName,
+        userName,
         password: user.password,
       });
       localStorage.setItem("authUser", JSON.stringify(response));
+      if (response?.accessToken || response?.token || response?.data) {
+        localStorage.setItem(
+          "data",
+          JSON.stringify({
+            data: response.accessToken || response.token || response.data,
+          })
+        );
+      }
       yield put(loginSuccess(response));
+      history('/dashboard');
     } else if (process.env.REACT_APP_DEFAULTAUTH === "fake") {
       const response = yield call(postFakeLogin, {
-        email: user.email,
+        email: userName,
+        userName,
         password: user.password,
       });
-      localStorage.setItem("authUser", JSON.stringify(response));
-      yield put(loginSuccess(response));
+
+      if (!(response?.isSuccess && response?.statusCode === 1 && response?.data)) {
+        throw response?.message || "Invalid username or password";
+      }
+
+      const loginPayload = {
+        userName,
+        email: userName,
+        token: response.data,
+        accessToken: response.data,
+        message: response.message,
+      };
+
+      localStorage.setItem("authUser", JSON.stringify(loginPayload));
+      if (loginPayload?.accessToken || loginPayload?.token || loginPayload?.data) {
+        localStorage.setItem(
+          "data",
+          JSON.stringify({
+            data: loginPayload.accessToken || loginPayload.token || loginPayload.data,
+          })
+        );
+      }
+
+      yield put(loginSuccess(loginPayload));
+      history('/dashboard');
     }
-    history('/dashboard');
   } catch (error) {
-    yield put(apiError(error));
+    yield put(apiError(error?.message || error));
   }
 }
 
 function* logoutUser({ payload: { history } }) {
   try {
     localStorage.removeItem("authUser");
+    localStorage.removeItem("data");
 
     if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
       const response = yield call(fireBaseBackend.logout);
