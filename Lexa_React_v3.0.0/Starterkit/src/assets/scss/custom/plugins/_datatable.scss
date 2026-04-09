@@ -8,6 +8,17 @@ Datatable
   border: $table-border-width solid $table-border-color;
 }
 
+/* Center all table headers */
+table thead th {
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Center all table row data */
+table tbody td {
+  text-align: center;
+  vertical-align: middle;
+}
 
 div.dataTables_wrapper {
   div.dataTables_filter{
