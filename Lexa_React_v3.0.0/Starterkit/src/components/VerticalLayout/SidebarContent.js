@@ -187,6 +187,24 @@ const SidebarContent = props => {
     return "/#"
   }
 
+  const getDynamicMenuIconClass = menuItem => {
+    const iconValue = String(menuItem?.icon || "").trim()
+
+    if (!iconValue) {
+      return "mdi mdi-folder-outline"
+    }
+
+    if (iconValue.startsWith("mdi ")) {
+      return iconValue
+    }
+
+    if (iconValue.startsWith("mdi-")) {
+      return `mdi ${iconValue}`
+    }
+
+    return iconValue
+  }
+
   return (
     <React.Fragment>
       <SimpleBar style={{ maxHeight: "100%" }} ref={ref}>
@@ -203,7 +221,7 @@ const SidebarContent = props => {
                       to={parent.children.length ? "/#" : getDynamicMenuLink(parent)}
                       className={parent.children.length ? "has-arrow waves-effect" : "waves-effect"}
                     >
-                      <i className="mdi mdi-folder-outline"></i>
+                      <i className={getDynamicMenuIconClass(parent)}></i>
                       <span>{parent.name}</span>
                     </Link>
 
@@ -211,7 +229,10 @@ const SidebarContent = props => {
                       <ul className="sub-menu">
                         {parent.children.map(child => (
                           <li key={`dynamic-child-${child.id}`}>
-                            <Link to={getDynamicMenuLink(child)}>{child.name}</Link>
+                            <Link to={getDynamicMenuLink(child)}>
+                              <i className={`${getDynamicMenuIconClass(child)} me-1`}></i>
+                              {child.name}
+                            </Link>
                           </li>
                         ))}
                       </ul>
