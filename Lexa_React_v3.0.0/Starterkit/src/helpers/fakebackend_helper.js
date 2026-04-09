@@ -83,6 +83,7 @@ const postFakeLogin = async data => {
   }
 };
 
+// using into ROle For Get value into Dropdown
 const getMenuPages = async () => {
   try {
     return await get("/Menu/GetAllpage", {
@@ -93,6 +94,20 @@ const getMenuPages = async () => {
       error?.response?.data?.message ||
       error?.message ||
       "Menu API call failed"
+    )
+  }
+};
+
+const getMenusPages = async (params = {}) => {
+  try {
+    return await get("/Menu/GetAllpage", {
+      params: buildPageParams(params),
+    })
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ||
+      error?.message ||
+      "Menus API call failed"
     )
   }
 };
@@ -153,6 +168,20 @@ const getRoleById = async id => {
   }
 }
 
+const getMenuById = async id => {
+  try {
+    return await get("/Menu/GetById", {
+      params: { id },
+    })
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ||
+      error?.message ||
+      "Menu fetch by id failed"
+    )
+  }
+}
+
 const saveUser = async payload => {
   try {
     return await post("/User/Add", payload)
@@ -173,6 +202,18 @@ const saveRole = async payload => {
       error?.response?.data?.message ||
       error?.message ||
       "Role save failed"
+    )
+  }
+}
+
+const saveMenu = async payload => {
+  try {
+    return await post("/Menu/Add", payload)
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ||
+      error?.message ||
+      "Menu save failed"
     )
   }
 }
@@ -297,14 +338,17 @@ export {
   postJwtForgetPwd,
   postJwtProfile,
   getMenuPages,
+  getMenusPages,
   getUsersPages,
   getRolesPages,
+  getMenuById,
   getUserById,
   getRoleById,
   getRoleNames,
   getRoleMenuPages,
   saveUser,
   saveRole,
+  saveMenu,
   deleteUserById,
   deleteRoleById,
   buildPageParams,

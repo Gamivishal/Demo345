@@ -165,6 +165,10 @@ const SidebarContent = props => {
     const controller = (child?.controller || "").toLowerCase()
     const name = (child?.name || "").toLowerCase()
 
+    if (controller === "menu" || name === "menu" || name === "menus") {
+      return "/menus"
+    }
+
     if (controller === "user" || name === "users") {
       return "/users"
     }

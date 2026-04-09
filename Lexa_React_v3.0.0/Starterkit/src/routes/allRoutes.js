@@ -21,6 +21,7 @@ import LockScreen from "../pages/AuthenticationInner/auth-lock-screen"
 import Dashboard from "../pages/Dashboard/index"
 import Users from "../pages/User"
 import Roles from "../pages/Role"
+import Menus from "../pages/Menu"
 
 
 //Extra Pages
@@ -41,6 +42,11 @@ const userRoutes = [
   { path: "/roles", component: <Roles /> },
   { path: "/roles/manage", component: <Roles /> },
   { path: "/roles/manage/:id", component: <Roles /> },
+
+  { path: "/menu", component: <Menus /> },
+  { path: "/menus", component: <Menus /> },
+  { path: "/menus/manage", component: <Menus /> },
+  { path: "/menus/manage/:id", component: <Menus /> },
 
   { path: "/pages-blank", component: <PagesBlank /> },
 
