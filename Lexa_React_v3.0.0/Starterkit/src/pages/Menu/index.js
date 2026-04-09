@@ -182,7 +182,7 @@ const Menus = props => {
   const data = useMemo(() => {
     return {
       columns: [
-        { label: "Id", field: "id", sort: "asc" },
+        { label: "Sr.", field: "sr", sort: "asc" },
         { label: "Name", field: "name", sort: "asc" },
         { label: "Parent", field: "parentId", sort: "asc" },
         { label: "Controller", field: "controller", sort: "asc" },
@@ -191,7 +191,8 @@ const Menus = props => {
         { label: "Super Admin", field: "isSuperAdmin", sort: "asc" },
         { label: "Action", field: "action", sort: "disabled" },
       ],
-      rows: rows.map(item => ({
+      rows: rows.map((item, index) => ({
+        sr: index + 1,
         id: item.id,
         name: item.name || "",
         parentId: item.parentId ?? 0,

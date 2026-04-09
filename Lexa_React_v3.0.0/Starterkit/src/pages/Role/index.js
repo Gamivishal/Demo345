@@ -160,14 +160,15 @@ const Roles = props => {
   const data = useMemo(() => {
     return {
       columns: [
-        { label: "Id", field: "id", sort: "asc" },
+        { label: "Sr.", field: "sr", sort: "asc" },
         { label: "Name", field: "name", sort: "asc" },
         { label: "Is Admin", field: "isAdmin", sort: "asc" },
         { label: "Active", field: "isActive", sort: "asc" },
         { label: "Selected Menu", field: "selectedMenu", sort: "disabled" },
         { label: "Action", field: "action", sort: "disabled" },
       ],
-      rows: rows.map(item => ({
+      rows: rows.map((item, index) => ({
+        sr: index + 1,
         id: item.id,
         name: item.name || "",
         isAdmin: item.isAdmin ? "Yes" : "No",

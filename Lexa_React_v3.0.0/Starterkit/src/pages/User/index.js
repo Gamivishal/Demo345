@@ -150,6 +150,7 @@ const Users = props => {
   const data = useMemo(() => {
     return {
       columns: [
+        { label: "Sr.", field: "sr", sort: "asc" },
         // { label: "Id", field: "id", sort: "asc" },
         { label: "User Name", field: "userName", sort: "asc" },
         { label: "Email", field: "email", sort: "asc" },
@@ -159,7 +160,8 @@ const Users = props => {
         { label: "Active", field: "isActive", sort: "asc" },
         { label: "Action", field: "action", sort: "disabled" },
       ],
-      rows: rows.map(item => ({
+      rows: rows.map((item, index) => ({
+        sr: index + 1,
         id: item.id,
         userName: item.userName || "",
         email: item.email || "",
