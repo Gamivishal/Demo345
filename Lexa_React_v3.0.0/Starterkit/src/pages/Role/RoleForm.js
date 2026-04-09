@@ -176,10 +176,7 @@ const RoleForm = ({
                 onChange={onChange}
                 placeholder="Enter role name"
               />
-            </Col>
-
-            <Col md={6} className="d-flex align-items-center mt-md-4 pt-md-2">
-              <div className="form-check">
+              <div className="form-check mt-3">
                 <input
                   id="isAdmin"
                   name="isAdmin"
