@@ -15,6 +15,16 @@ import {
 import { showConfirm, showError, showSuccess } from "../../Pop_show/alertService"
 import RoleForm from "./RoleForm"
 
+const toBoolean = value => {
+  if (typeof value === "boolean") return value
+  if (typeof value === "number") return value === 1
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase()
+    return ["true", "1", "yes"].includes(normalized)
+  }
+  return Boolean(value)
+}
+
 const Roles = props => {
   document.title = "Roles | Lexa - Responsive Bootstrap 5 Admin Dashboard"
   const navigate = useNavigate()
@@ -133,8 +143,8 @@ const Roles = props => {
         setFormData({
           id: role.id || 0,
           name: role.name || "",
-          isDeleted: Boolean(role.isDeleted),
-          isAdmin: Boolean(role.isAdmin),
+          isDeleted: toBoolean(role.isDeleted),
+          isAdmin: toBoolean(role.isAdmin),
           selectedMenu: role.selectedMenu || "",
         })
       } catch (err) {
@@ -198,8 +208,17 @@ const Roles = props => {
     const { name, value, type, checked } = event.target
     setFormData(previous => ({
       ...previous,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: type === "checkbox" ? Boolean(checked) : value,
     }))
+  }
+
+  const handleIsAdminToggle = () => {
+    console.log("handleIsAdminToggle called, current isAdmin:", formData.isAdmin)
+    setFormData(previous => {
+      const newState = { ...previous, isAdmin: !previous.isAdmin }
+      console.log("isAdmin toggled to:", newState.isAdmin)
+      return newState
+    })
   }
 
   const handleSelectedMenuChange = selectedMenuValue => {
@@ -243,11 +262,12 @@ const Roles = props => {
       const payload = {
         id: isEditMode ? Number(formData.id) || roleId : 0,
         name: formData.name,
-        isDeleted: Boolean(formData.isDeleted),
-        isAdmin: Boolean(formData.isAdmin),
+        isDeleted: toBoolean(formData.isDeleted),
+        isAdmin: toBoolean(formData.isAdmin),
         selectedMenu: formData.selectedMenu || "",
       }
 
+      console.log("Form submitted with payload:", payload)
       const response = await saveRole(payload)
       if (response?.statusCode === 1) {
         await showSuccess(response?.message || "Role saved successfully")
@@ -286,6 +306,7 @@ const Roles = props => {
                 menuOptions={menuOptions}
                 saving={saving}
                 onChange={handleChange}
+                onIsAdminToggle={handleIsAdminToggle}
                 onSelectedMenuChange={handleSelectedMenuChange}
                 onSubmit={handleSubmit}
                 onClose={() => navigate("/roles")}

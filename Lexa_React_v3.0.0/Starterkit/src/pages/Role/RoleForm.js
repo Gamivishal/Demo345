@@ -20,6 +20,7 @@ const RoleForm = ({
   menuOptions,
   saving,
   onChange,
+  onIsAdminToggle,
   onSelectedMenuChange,
   onSubmit,
   onClose,
@@ -119,12 +120,14 @@ const RoleForm = ({
       .sort((a, b) => Number(a) - Number(b))
       .join(",")
 
+    console.log("Menu selected IDs:", nextValue)
     onSelectedMenuChange(nextValue)
   }
 
   const renderMenuNode = (menu, level = 0) => {
     const children = childrenByParent.get(menu.id) || []
     const checkboxId = `role-menu-${menu.id}`
+    const isChecked = selectedSetFromProps.has(menu.id)
 
     return (
       <div key={menu.id} style={{ paddingLeft: level * 20 }}>
@@ -133,8 +136,9 @@ const RoleForm = ({
             id={checkboxId}
             type="checkbox"
             className="form-check-input"
-            checked={selectedSetFromProps.has(menu.id)}
-            onChange={event => handleMenuToggle(menu.id, event.target.checked)}
+            checked={isChecked}
+            onChange={e => e.preventDefault()}
+            onClick={() => handleMenuToggle(menu.id, !isChecked)}
           />
           <label htmlFor={checkboxId} className="form-check-label ms-2">
             {menu.name}
@@ -181,8 +185,9 @@ const RoleForm = ({
                   name="isAdmin"
                   type="checkbox"
                   className="form-check-input"
-                  checked={formData.isAdmin}
-                  onChange={onChange}
+                  checked={Boolean(formData.isAdmin)}
+                  onChange={e => e.preventDefault()}
+                  onClick={onIsAdminToggle}
                 />
                 <label htmlFor="isAdmin" className="form-check-label ms-2">
                   Is Admin
