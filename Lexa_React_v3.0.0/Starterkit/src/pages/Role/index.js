@@ -5,99 +5,103 @@ import { connect } from "react-redux"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 
 import { setBreadcrumbItems } from "../../store/actions"
-import { deleteUserById, getRoleNames, getUserById, getUsersPages, saveUser } from "../../helpers/fakebackend_helper"
+import {
+  deleteRoleById,
+  getRoleById,
+  getRoleMenuPages,
+  getRolesPages,
+  saveRole,
+} from "../../helpers/fakebackend_helper"
 import { showConfirm, showError, showSuccess } from "../../Pop_show/alertService"
-import UserForm from "./UserForm"
+import RoleForm from "./RoleForm"
 
-const Users = props => {
-  document.title = "Users | Lexa - Responsive Bootstrap 5 Admin Dashboard"
+const Roles = props => {
+  document.title = "Roles | Lexa - Responsive Bootstrap 5 Admin Dashboard"
   const navigate = useNavigate()
   const location = useLocation()
   const params = useParams()
-  const userId = Number(params.id || 0)
-  const isFormPage = location.pathname.startsWith("/users/manage")
-  const isEditMode = isFormPage && userId > 0
+  const roleId = Number(params.id || 0)
+  const isFormPage = location.pathname.startsWith("/roles/manage")
+  const isEditMode = isFormPage && roleId > 0
 
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [deletingId, setDeletingId] = useState(0)
   const [error, setError] = useState("")
   const [formError, setFormError] = useState("")
-  const [roleOptions, setRoleOptions] = useState([])
   const [rows, setRows] = useState([])
-  const [formTitle, setFormTitle] = useState(isEditMode ? "Edit User" : "Create User")
+  const [menuOptions, setMenuOptions] = useState([])
+  const [formTitle, setFormTitle] = useState(isEditMode ? "Edit Role" : "Create Role")
   const [formData, setFormData] = useState({
     id: 0,
-    userName: "",
-    password: "",
-    email: "",
-    mobileNumber: "",
-    roleId: "",
+    name: "",
     isDeleted: false,
+    isAdmin: false,
+    selectedMenu: "",
   })
 
   const breadcrumbItems = [
     { title: "Lexa", link: "#" },
-    { title: "Users", link: "#" },
+    { title: "Roles", link: "#" },
   ]
 
-  const loadUsers = async () => {
+  const loadRoles = async () => {
     setLoading(true)
     setError("")
 
     try {
-      const response = await getUsersPages({
+      const response = await getRolesPages({
         start: 0,
         length: 10,
       })
 
       if (!(response?.isSuccess && response?.statusCode === 1)) {
-        throw new Error(response?.message || "Failed to load users")
+        throw new Error(response?.message || "Failed to load roles")
       }
 
       const list = response?.data?.data || []
       setRows(Array.isArray(list) ? list : [])
     } catch (err) {
-      setError(err?.message || err || "Failed to load users")
+      setError(err?.message || err || "Failed to load roles")
     } finally {
       setLoading(false)
     }
   }
 
   useEffect(() => {
-    props.setBreadcrumbItems("Users", breadcrumbItems)
+    props.setBreadcrumbItems("Roles", breadcrumbItems)
   }, [])
 
   useEffect(() => {
     if (!isFormPage) {
-      loadUsers()
+      loadRoles()
     }
   }, [isFormPage])
 
   useEffect(() => {
-    const loadRoles = async () => {
+    const loadMenus = async () => {
       if (!isFormPage) {
         return
       }
 
       try {
-        const response = await getRoleNames()
-        if (response?.statusCode === 1 && Array.isArray(response?.data)) {
-          setRoleOptions(response.data)
+        const response = await getRoleMenuPages()
+        if (response?.statusCode === 1 && Array.isArray(response?.data?.data)) {
+          setMenuOptions(response.data.data)
           return
         }
 
-        throw new Error(response?.message || "Failed to load roles")
+        throw new Error(response?.message || "Failed to load menus")
       } catch (err) {
-        setFormError(err?.message || err || "Failed to load roles")
+        setFormError(err?.message || err || "Failed to load menus")
       }
     }
 
-    loadRoles()
+    loadMenus()
   }, [isFormPage])
 
   useEffect(() => {
-    const loadUser = async () => {
+    const loadRole = async () => {
       if (!isFormPage) {
         return
       }
@@ -105,15 +109,13 @@ const Users = props => {
       setFormError("")
 
       if (!isEditMode) {
-        setFormTitle("Create User")
+        setFormTitle("Create Role")
         setFormData({
           id: 0,
-          userName: "",
-          password: "",
-          email: "",
-          mobileNumber: "",
-          roleId: "",
+          name: "",
           isDeleted: false,
+          isAdmin: false,
+          selectedMenu: "",
         })
         return
       }
@@ -121,52 +123,46 @@ const Users = props => {
       setLoading(true)
 
       try {
-        const response = await getUserById(userId)
+        const response = await getRoleById(roleId)
         if (!(response?.isSuccess && response?.statusCode === 1)) {
-          throw new Error(response?.message || "Failed to load user")
+          throw new Error(response?.message || "Failed to load role")
         }
 
-        const user = response?.data || {}
-        setFormTitle("Edit User")
+        const role = response?.data || {}
+        setFormTitle("Edit Role")
         setFormData({
-          id: user.id || 0,
-          userName: user.userName || "",
-          password: user.password || "",
-          email: user.email || "",
-          mobileNumber: user.mobileNumber || "",
-          roleId: user.roleId ?? "",
-          isDeleted: Boolean(user.isDeleted),
+          id: role.id || 0,
+          name: role.name || "",
+          isDeleted: Boolean(role.isDeleted),
+          isAdmin: Boolean(role.isAdmin),
+          selectedMenu: role.selectedMenu || "",
         })
       } catch (err) {
-        setFormError(err?.message || err || "Failed to load user")
+        setFormError(err?.message || err || "Failed to load role")
       } finally {
         setLoading(false)
       }
     }
 
-    loadUser()
-  }, [isFormPage, isEditMode, userId])
+    loadRole()
+  }, [isFormPage, isEditMode, roleId])
 
   const data = useMemo(() => {
     return {
       columns: [
         { label: "Id", field: "id", sort: "asc" },
-        { label: "User Name", field: "userName", sort: "asc" },
-        { label: "Email", field: "email", sort: "asc" },
-        { label: "Mobile Number", field: "mobileNumber", sort: "asc" },
-        { label: "Role Id", field: "roleId", sort: "asc" },
-        { label: "Role Name", field: "rolename", sort: "asc" },
+        { label: "Name", field: "name", sort: "asc" },
+        { label: "Is Admin", field: "isAdmin", sort: "asc" },
         { label: "Active", field: "isActive", sort: "asc" },
+        { label: "Selected Menu", field: "selectedMenu", sort: "disabled" },
         { label: "Action", field: "action", sort: "disabled" },
       ],
       rows: rows.map(item => ({
         id: item.id,
-        userName: item.userName || "",
-        email: item.email || "",
-        mobileNumber: item.mobileNumber || "",
-        roleId: item.roleId ?? "",
-        rolename: item.rolename || "",
+        name: item.name || "",
+        isAdmin: item.isAdmin ? "Yes" : "No",
         isActive: item.isActive ? "Yes" : "No",
+        selectedMenu: item.selectedMenu || "",
         action: (
           <div className="d-flex gap-2 justify-content-center">
             <Button
@@ -174,7 +170,7 @@ const Users = props => {
               className="p-0 text-primary"
               title="Edit"
               type="button"
-              onClick={() => navigate(`/users/manage/${item.id}`)}
+              onClick={() => navigate(`/roles/manage/${item.id}`)}
             >
               <i className="mdi mdi-pencil font-size-18" />
             </Button>
@@ -196,7 +192,7 @@ const Users = props => {
         ),
       })),
     }
-  }, [rows])
+  }, [rows, deletingId, navigate])
 
   const handleChange = event => {
     const { name, value, type, checked } = event.target
@@ -206,31 +202,32 @@ const Users = props => {
     }))
   }
 
-  const handleRoleChange = option => {
+  const handleSelectedMenuChange = selectedMenuValue => {
     setFormData(previous => ({
       ...previous,
-      roleId: option?.value ?? "",
+      selectedMenu: selectedMenuValue || "",
     }))
   }
 
   const handleDelete = async id => {
-    const isConfirmed = await showConfirm("Are you sure you want to delete this user?", "Delete", "Cancel")
+    const isConfirmed = await showConfirm("Are you sure you want to delete this role?", "Delete", "Cancel")
     if (!isConfirmed) {
       return
     }
 
     setDeletingId(id)
+
     try {
-      const response = await deleteUserById(id)
+      const response = await deleteRoleById(id)
       if (response?.statusCode === 1) {
-        await showSuccess(response?.message || "User deleted successfully")
-        await loadUsers()
+        await showSuccess(response?.message || "Role deleted successfully")
+        await loadRoles()
         return
       }
 
-      throw new Error(response?.message || "Failed to delete user")
+      throw new Error(response?.message || "Failed to delete role")
     } catch (err) {
-      const errorMessage = err?.message || err || "Failed to delete user"
+      const errorMessage = err?.message || err || "Failed to delete role"
       await showError(errorMessage)
     } finally {
       setDeletingId(0)
@@ -240,30 +237,27 @@ const Users = props => {
   const handleSubmit = async event => {
     event.preventDefault()
     setFormError("")
-
     setSaving(true)
 
     try {
       const payload = {
-        id: isEditMode ? Number(formData.id) || userId : 0,
-        userName: formData.userName,
-        password: formData.password,
+        id: isEditMode ? Number(formData.id) || roleId : 0,
+        name: formData.name,
         isDeleted: Boolean(formData.isDeleted),
-        email: formData.email,
-        mobileNumber: formData.mobileNumber,
-        roleId: Number(formData.roleId) || 0,
+        isAdmin: Boolean(formData.isAdmin),
+        selectedMenu: formData.selectedMenu || "",
       }
 
-      const response = await saveUser(payload)
+      const response = await saveRole(payload)
       if (response?.statusCode === 1) {
-        await showSuccess(response?.message || "Saved successfully")
-        navigate("/users")
+        await showSuccess(response?.message || "Role saved successfully")
+        navigate("/roles")
         return
       }
 
-      throw new Error(response?.message || "Failed to save user")
+      throw new Error(response?.message || "Failed to save role")
     } catch (err) {
-      const errorMessage = err?.message || err || "Failed to save user"
+      const errorMessage = err?.message || err || "Failed to save role"
       await showError(errorMessage)
       setFormError(errorMessage)
     } finally {
@@ -285,23 +279,23 @@ const Users = props => {
                 </CardBody>
               </Card>
             ) : (
-              <UserForm
+              <RoleForm
                 title={formTitle}
                 formError={formError}
                 formData={formData}
-                roleOptions={roleOptions}
+                menuOptions={menuOptions}
                 saving={saving}
                 onChange={handleChange}
-                onRoleChange={handleRoleChange}
+                onSelectedMenuChange={handleSelectedMenuChange}
                 onSubmit={handleSubmit}
-                onClose={() => navigate("/users")}
+                onClose={() => navigate("/roles")}
               />
             )
           ) : (
             <Card>
               <CardBody>
                 <div className="d-flex justify-content-end mb-3">
-                  <Button color="primary" type="button" onClick={() => navigate("/users/manage")}>
+                  <Button color="primary" type="button" onClick={() => navigate("/roles/manage")}>
                     Add
                   </Button>
                 </div>
@@ -322,4 +316,4 @@ const Users = props => {
   )
 }
 
-export default connect(null, { setBreadcrumbItems })(Users)
+export default connect(null, { setBreadcrumbItems })(Roles)

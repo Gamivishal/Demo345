@@ -33,14 +33,14 @@ const UserForm = ({
   const selectedRole = roleSelectOptions.find(option => Number(option.value) === Number(formData.roleId)) || null
 
   return (
-    <Card className="mb-4">
+    <Card className="mb-4 app-form-card">
       <CardHeader className="bg-white d-flex align-items-center justify-content-between">
         <h5 className="mb-0">{title}</h5>
         <Button color="link" className="p-0" type="button" onClick={onClose}>
           Close
         </Button>
       </CardHeader>
-      <CardBody>
+      <CardBody className="app-form-body">
         {formError ? <Alert color="danger">{formError}</Alert> : null}
         <Form onSubmit={onSubmit}>
           <Row className="g-3">
@@ -93,23 +93,9 @@ const UserForm = ({
                 isClearable
               />
             </Col>
-            <Col md={6} className="d-flex align-items-center mt-md-4 pt-md-2">
-              <div className="form-check">
-                <Input
-                  id="isActive"
-                  name="isActive"
-                  type="checkbox"
-                  checked={formData.isActive}
-                  onChange={onChange}
-                />
-                <Label for="isActive" className="form-check-label ms-2">
-                  Active
-                </Label>
-              </div>
-            </Col>
           </Row>
 
-          <div className="d-flex gap-2 justify-content-end mt-4">
+          <div className="app-form-actions">
             <Button color="light" type="button" onClick={onClose}>
               Cancel
             </Button>

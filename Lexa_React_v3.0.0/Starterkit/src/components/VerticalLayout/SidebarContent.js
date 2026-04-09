@@ -169,6 +169,10 @@ const SidebarContent = props => {
       return "/users"
     }
 
+    if (controller === "role" || name === "roles" || name === "role") {
+      return "/roles"
+    }
+
     if (child?.url && child.url !== "string") {
       return child.url.startsWith("/") ? child.url : `/${child.url}`
     }

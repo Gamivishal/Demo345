@@ -219,6 +219,44 @@ span.flatpickr-weekday {
   text-align: right !important;
   width: 100% !important;
 }
+
+// Shared centered form styles (User/Role and future forms)
+.app-form-card {
+  width: 100%;
+  border-radius: 12px;
+}
+
+.app-form-body {
+  padding: 1.5rem;
+}
+
+.app-form-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+
+.app-form-actions .btn {
+  min-width: 130px;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+@include media-breakpoint-down(sm) {
+  .app-form-body {
+    padding: 1rem;
+  }
+
+  .app-form-actions {
+    flex-wrap: wrap;
+  }
+
+  .app-form-actions .btn {
+    width: 100%;
+  }
+}
 .wizard .actions > ul {
   display: block !important;
   text-align: right !important;

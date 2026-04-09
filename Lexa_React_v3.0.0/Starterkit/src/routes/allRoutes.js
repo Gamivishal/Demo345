@@ -20,6 +20,7 @@ import LockScreen from "../pages/AuthenticationInner/auth-lock-screen"
 // Dashboard
 import Dashboard from "../pages/Dashboard/index"
 import Users from "../pages/User"
+import Roles from "../pages/Role"
 
 
 //Extra Pages
@@ -36,6 +37,10 @@ const userRoutes = [
   { path: "/users", component: <Users /> },
   { path: "/users/manage", component: <Users /> },
   { path: "/users/manage/:id", component: <Users /> },
+
+  { path: "/roles", component: <Roles /> },
+  { path: "/roles/manage", component: <Roles /> },
+  { path: "/roles/manage/:id", component: <Roles /> },
 
   { path: "/pages-blank", component: <PagesBlank /> },
 

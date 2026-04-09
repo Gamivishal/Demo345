@@ -111,6 +111,20 @@ const getUsersPages = async (params = {}) => {
   }
 };
 
+const getRolesPages = async (params = {}) => {
+  try {
+    return await get("/Role/GetAllpage", {
+      params: buildPageParams(params),
+    })
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ||
+      error?.message ||
+      "Roles API call failed"
+    )
+  }
+};
+
 const getUserById = async id => {
   try {
     return await get("/User/GetById", {
@@ -121,6 +135,20 @@ const getUserById = async id => {
       error?.response?.data?.message ||
       error?.message ||
       "User fetch by id failed"
+    )
+  }
+}
+
+const getRoleById = async id => {
+  try {
+    return await get("/Role/GetById", {
+      params: { id },
+    })
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ||
+      error?.message ||
+      "Role fetch by id failed"
     )
   }
 }
@@ -137,6 +165,18 @@ const saveUser = async payload => {
   }
 }
 
+const saveRole = async payload => {
+  try {
+    return await post("/Role/Save", payload)
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ||
+      error?.message ||
+      "Role save failed"
+    )
+  }
+}
+
 const getRoleNames = async () => {
   try {
     return await get("/Dropdown/RoleName")
@@ -145,6 +185,23 @@ const getRoleNames = async () => {
       error?.response?.data?.message ||
       error?.message ||
       "Role dropdown API call failed"
+    )
+  }
+}
+
+const getRoleMenuPages = async () => {
+  try {
+    return await get("/Menu/GetAllpage", {
+      params: buildPageParams({
+        length: 100,
+        sortColumnDir: "asc",
+      }),
+    })
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ||
+      error?.message ||
+      "Role menu API call failed"
     )
   }
 }
@@ -159,6 +216,20 @@ const deleteUserById = async id => {
       error?.response?.data?.message ||
       error?.message ||
       "User delete failed"
+    )
+  }
+}
+
+const deleteRoleById = async id => {
+  try {
+    return await del("/Role/Delete", {
+      params: { id },
+    })
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ||
+      error?.message ||
+      "Role delete failed"
     )
   }
 }
@@ -227,9 +298,14 @@ export {
   postJwtProfile,
   getMenuPages,
   getUsersPages,
+  getRolesPages,
   getUserById,
+  getRoleById,
   getRoleNames,
+  getRoleMenuPages,
   saveUser,
+  saveRole,
   deleteUserById,
+  deleteRoleById,
   buildPageParams,
 }
