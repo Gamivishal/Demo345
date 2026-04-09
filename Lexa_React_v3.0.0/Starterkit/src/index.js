@@ -5,6 +5,7 @@ import * as serviceWorker from "./serviceWorker"
 import { BrowserRouter } from "react-router-dom"
 import "./i18n"
 import { Provider } from "react-redux"
+import { ToastContainer } from "react-toastify"
 
 import store from "./store"
 
@@ -16,6 +17,7 @@ root.render(
       <BrowserRouter basename={process.env.PUBLIC_URL}>
         <App />
       </BrowserRouter>
+      <ToastContainer newestOnTop />
   </>
     </Provider>
 );

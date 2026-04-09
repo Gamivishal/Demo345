@@ -41,7 +41,7 @@ function* loginUser({ payload: { user, history } }) {
         user.password
       );
       if (response?.statusCode === 1 || response?.isSuccess) {
-        yield call(showSuccess, response?.message || "Login successful")
+        yield call(showSuccess, response)
       }
       yield* loadUserMenus()
       yield put(loginSuccess(response));
@@ -53,7 +53,7 @@ function* loginUser({ payload: { user, history } }) {
         password: user.password,
       });
       if (response?.statusCode === 1 || response?.isSuccess) {
-        yield call(showSuccess, response?.message || "Login successful")
+        yield call(showSuccess, response)
       }
       localStorage.setItem("authUser", JSON.stringify(response));
       if (response?.accessToken || response?.token || response?.data) {
@@ -78,7 +78,7 @@ function* loginUser({ payload: { user, history } }) {
         throw response?.message || "Invalid username or password";
       }
 
-      yield call(showSuccess, response?.message || "Login successful")
+      yield call(showSuccess, response)
 
       const loginPayload = {
         userName,

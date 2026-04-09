@@ -1,4 +1,7 @@
 import "./alertService.css";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { consumeLastApiResponseData } from "../helpers/api_helper";
 
 let activeOverlay = null;
 let activeResolve = null;
@@ -126,26 +129,41 @@ const buildPopup = ({
     });
 };
 
-export const showSuccess = (message = "Success!") => {
-    return buildPopup({
-        type: "success",
-        title: message,
-        message: "",
-        confirmText: "OK",
-        showCancel: false,
-        autoCloseMs: 1800,
+export const showSuccess = (messageOrResponse = "Success!") => {
+    const isResponseObject = typeof messageOrResponse === "object" && messageOrResponse !== null;
+    const responseData = isResponseObject ? messageOrResponse : consumeLastApiResponseData();
+
+    if (responseData?.isConfirm === false) {
+        return Promise.resolve({ isConfirmed: true, value: true });
+    }
+
+    const message = isResponseObject
+        ? messageOrResponse?.message || "Success!"
+        : messageOrResponse;
+
+    toast.success(message, {
+        position: "top-right",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
     });
+
+    return Promise.resolve({ isConfirmed: true, value: true });
 };
 
 export const showError = (message = "Something went wrong!") => {
-    return buildPopup({
-        type: "error",
-        title: "Error",
-        message,
-        confirmText: "OK",
-        showCancel: false,
-        autoCloseMs: 0,
+    toast.error(message, {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
     });
+
+    return Promise.resolve({ isConfirmed: true, value: true });
 };
 
 export const showConfirm = async (

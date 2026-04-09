@@ -7,6 +7,8 @@ const axiosApi = axios.create({
   baseURL: API_URL,
 });
 
+let lastApiResponseData = null;
+
 axiosApi.interceptors.request.use(
   config => {
     const tokenData = localStorage.getItem("data");
@@ -33,9 +35,21 @@ axiosApi.interceptors.request.use(
   error => Promise.reject(error)
 );
 axiosApi.interceptors.response.use(
-  (response) => response,
-  (error) => Promise.reject(error)
+  (response) => {
+    lastApiResponseData = response?.data ?? null;
+    return response;
+  },
+  (error) => {
+    lastApiResponseData = error?.response?.data ?? null;
+    return Promise.reject(error);
+  }
 );
+
+export const consumeLastApiResponseData = () => {
+  const recentResponseData = lastApiResponseData;
+  lastApiResponseData = null;
+  return recentResponseData;
+};
 
 export async function get(url, config = {}) {
   return await axiosApi
