@@ -9,7 +9,7 @@ import { getFirebaseBackend } from "../../../helpers/firebase_helper";
 import {
   postFakeLogin,
   postJwtLogin,
-  getMenuPages,
+  getMenuAccessPages,
 } from "../../../helpers/fakebackend_helper";
 import { showSuccess } from "../../../Pop_show/alertService";
 
@@ -18,6 +18,21 @@ const fireBaseBackend = getFirebaseBackend();
 function* loginUser({ payload: { user, history } }) {
   try {
     const userName = user.userName || user.email;
+
+    const loadUserMenus = function* () {
+      try {
+        const menuResponse = yield call(getMenuAccessPages)
+        const menuList = Array.isArray(menuResponse)
+          ? menuResponse
+          : Array.isArray(menuResponse?.data)
+            ? menuResponse.data
+            : []
+
+        localStorage.setItem("menuPages", JSON.stringify(menuList))
+      } catch (menuError) {
+        localStorage.removeItem("menuPages")
+      }
+    }
 
     if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
       const response = yield call(
@@ -28,6 +43,7 @@ function* loginUser({ payload: { user, history } }) {
       if (response?.statusCode === 1 || response?.isSuccess) {
         yield call(showSuccess, response?.message || "Login successful")
       }
+      yield* loadUserMenus()
       yield put(loginSuccess(response));
       history('/dashboard');
     } else if (process.env.REACT_APP_DEFAULTAUTH === "jwt") {
@@ -48,6 +64,7 @@ function* loginUser({ payload: { user, history } }) {
           })
         );
       }
+      yield* loadUserMenus()
       yield put(loginSuccess(response));
       history('/dashboard');
     } else if (process.env.REACT_APP_DEFAULTAUTH === "fake") {
@@ -81,19 +98,7 @@ function* loginUser({ payload: { user, history } }) {
         );
       }
 
-      try {
-        const menuResponse = yield call(getMenuPages);
-        if (menuResponse?.isSuccess && menuResponse?.statusCode === 1) {
-          localStorage.setItem(
-            "menuPages",
-            JSON.stringify(menuResponse?.data?.data || [])
-          );
-        } else {
-          localStorage.removeItem("menuPages");
-        }
-      } catch (menuError) {
-        localStorage.removeItem("menuPages");
-      }
+      yield* loadUserMenus()
 
       yield put(loginSuccess(loginPayload));
       history('/dashboard');

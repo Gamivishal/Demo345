@@ -148,14 +148,26 @@ const SidebarContent = props => {
         .filter(item => item && item.isActive && !item.isDeleted)
         .sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0))
 
-      const parents = activeItems.filter(item => Number(item.parentId) === 0)
+      const menuById = new Map(activeItems.map(item => [Number(item.id), item]))
+      const rootParents = activeItems.filter(item => Number(item.parentId) === 0)
 
-      return parents.map(parent => ({
+      const parentWithChildren = rootParents.map(parent => ({
         ...parent,
         children: activeItems.filter(
           child => Number(child.parentId) === Number(parent.id)
         ),
       }))
+
+      // If backend returns child menu without parent row, show it as top-level.
+      const orphanChildrenAsTopLevel = activeItems
+        .filter(item => Number(item.parentId) !== 0 && !menuById.has(Number(item.parentId)))
+        .map(item => ({
+          ...item,
+          parentId: 0,
+          children: [],
+        }))
+
+      return [...parentWithChildren, ...orphanChildrenAsTopLevel]
     } catch (error) {
       return []
     }
@@ -163,22 +175,13 @@ const SidebarContent = props => {
 
   const getDynamicMenuLink = child => {
     const controller = (child?.controller || "").toLowerCase()
-    const name = (child?.name || "").toLowerCase()
-
-    if (controller === "menu" || name === "menu" || name === "menus") {
-      return "/menus"
-    }
-
-    if (controller === "user" || name === "users") {
-      return "/users"
-    }
-
-    if (controller === "role" || name === "roles" || name === "role") {
-      return "/roles"
-    }
 
     if (child?.url && child.url !== "string") {
       return child.url.startsWith("/") ? child.url : `/${child.url}`
+    }
+
+    if (controller) {
+      return controller.endsWith("s") ? `/${controller}` : `/${controller}s`
     }
 
     return "/#"
@@ -197,7 +200,7 @@ const SidebarContent = props => {
                 {dynamicMenu.map(parent => (
                   <li key={`dynamic-parent-${parent.id}`}>
                     <Link
-                      to="/#"
+                      to={parent.children.length ? "/#" : getDynamicMenuLink(parent)}
                       className={parent.children.length ? "has-arrow waves-effect" : "waves-effect"}
                     >
                       <i className="mdi mdi-folder-outline"></i>
@@ -218,13 +221,15 @@ const SidebarContent = props => {
               </>
             )}
 
-            <li>
-              <Link to="/dashboard" className="waves-effect">
-                <i className="mdi mdi-view-dashboard"></i>
-                <span className="badge rounded-pill bg-primary float-end">2</span>
-                <span>{props.t("Dashboard")}</span>
-              </Link>
-            </li>
+            {dynamicMenu.length === 0 && (
+              <li>
+                <Link to="/dashboard" className="waves-effect">
+                  <i className="mdi mdi-view-dashboard"></i>
+                  <span className="badge rounded-pill bg-primary float-end">2</span>
+                  <span>{props.t("Dashboard")}</span>
+                </Link>
+              </li>
+            )}
 
             {/* <li>
               <Link to="#" className=" waves-effect">

@@ -247,6 +247,18 @@ const getRoleMenuPages = async () => {
   }
 }
 
+const getMenuAccessPages = async () => {
+  try {
+    return await get("/MenuAccess/GetMenuAccess")
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ||
+      error?.message ||
+      "Menu access API call failed"
+    )
+  }
+}
+
 const deleteUserById = async id => {
   try {
     return await del("/User/Delete", {
@@ -346,6 +358,7 @@ export {
   getRoleById,
   getRoleNames,
   getRoleMenuPages,
+  getMenuAccessPages,
   saveUser,
   saveRole,
   saveMenu,
