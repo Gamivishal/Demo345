@@ -307,7 +307,7 @@ const Menus = props => {
               <CardBody>
                 <div className="d-flex justify-content-end mb-3">
                   <Button color="primary" type="button" onClick={() => navigate("/menus/manage")}>
-                    Add
+                   <i className="mdi mdi-plus me-1" />Add Menu
                   </Button>
                 </div>
                 {error ? <Alert color="danger">{error}</Alert> : null}

@@ -317,7 +317,7 @@ const Roles = props => {
               <CardBody>
                 <div className="d-flex justify-content-end mb-3">
                   <Button color="primary" type="button" onClick={() => navigate("/roles/manage")}>
-                    Add
+                   <i className="mdi mdi-plus me-1" />Add Role
                   </Button>
                 </div>
                 {error ? <Alert color="danger">{error}</Alert> : null}

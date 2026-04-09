@@ -150,11 +150,11 @@ const Users = props => {
   const data = useMemo(() => {
     return {
       columns: [
-        { label: "Id", field: "id", sort: "asc" },
+        // { label: "Id", field: "id", sort: "asc" },
         { label: "User Name", field: "userName", sort: "asc" },
         { label: "Email", field: "email", sort: "asc" },
         { label: "Mobile Number", field: "mobileNumber", sort: "asc" },
-        { label: "Role Id", field: "roleId", sort: "asc" },
+        // { label: "Role Id", field: "roleId", sort: "asc" },
         { label: "Role Name", field: "rolename", sort: "asc" },
         { label: "Active", field: "isActive", sort: "asc" },
         { label: "Action", field: "action", sort: "disabled" },
@@ -306,7 +306,7 @@ const Users = props => {
               <CardBody>
                 <div className="d-flex justify-content-end mb-3">
                   <Button color="primary" type="button" onClick={() => navigate("/users/manage")}>
-                    Add
+                     <i className="mdi mdi-plus me-1" />Add User
                   </Button>
                 </div>
                 {error ? <Alert color="danger">{error}</Alert> : null}
