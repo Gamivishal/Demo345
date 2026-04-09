@@ -182,10 +182,13 @@ const getMenuById = async id => {
   }
 }
 
-const getLovColumns = async () => {
+const getLovColumns = async (params = {}) => {
   try {
     return await get("/Lov/Get", {
-      params: { flag: "LI" },
+      params: {
+        flag: "LI",
+        ...params,
+      },
     })
   } catch (error) {
     throw (
@@ -213,12 +216,13 @@ const getLovMasterByColumn = async lovColumn => {
   }
 }
 
-const getLovDetailsByColumn = async lovColumn => {
+const getLovDetailsByColumn = async (lovColumn, params = {}) => {
   try {
     return await get("/Lov/Get", {
       params: {
         flag: "LDI",
         lovColumn,
+        ...params,
       },
     })
   } catch (error) {

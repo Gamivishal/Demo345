@@ -3,6 +3,7 @@ import { Alert, Button, Card, CardBody, Spinner } from "reactstrap"
 import { MDBDataTable } from "mdbreact"
 import { connect } from "react-redux"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
+import { buildServerSortColumns, getNextSortState, withAutoSrColumn } from "../../common/common"
 
 import { setBreadcrumbItems } from "../../store/actions"
 import {
@@ -56,6 +57,11 @@ const LOV_BREADCRUMB_ITEMS = [
   { title: "LOV", link: "#" },
 ]
 
+const LOV_MASTER_SORT_COLUMN = "lov_Column"
+const LOV_MASTER_SORT_DIR = "asc"
+const LOV_DETAIL_SORT_COLUMN = "displayOrder"
+const LOV_DETAIL_SORT_DIR = "asc"
+
 const Lov = props => {
   document.title = "LOV | Lexa - Responsive Bootstrap 5 Admin Dashboard"
   const { setBreadcrumbItems } = props
@@ -82,6 +88,10 @@ const Lov = props => {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState("")
   const [formError, setFormError] = useState("")
+  const [masterSortColumn, setMasterSortColumn] = useState(LOV_MASTER_SORT_COLUMN)
+  const [masterSortColumnDir, setMasterSortColumnDir] = useState(LOV_MASTER_SORT_DIR)
+  const [detailSortColumn, setDetailSortColumn] = useState(LOV_DETAIL_SORT_COLUMN)
+  const [detailSortColumnDir, setDetailSortColumnDir] = useState(LOV_DETAIL_SORT_DIR)
 
   const [masterRows, setMasterRows] = useState([])
   const [detailRows, setDetailRows] = useState([])
@@ -105,7 +115,10 @@ const Lov = props => {
     setError("")
 
     try {
-      const response = await getLovColumns()
+      const response = await getLovColumns({
+        sortColumn: masterSortColumn,
+        sortColumnDir: masterSortColumnDir,
+      })
       if (!(response?.isSuccess && response?.statusCode === 1)) {
         throw new Error(response?.message || "Failed to load LOV columns")
       }
@@ -155,7 +168,10 @@ const Lov = props => {
     setError("")
 
     try {
-      const response = await getLovDetailsByColumn(lovColumn)
+      const response = await getLovDetailsByColumn(lovColumn, {
+        sortColumn: detailSortColumn,
+        sortColumnDir: detailSortColumnDir,
+      })
       if (!(response?.isSuccess && response?.statusCode === 1)) {
         throw new Error(response?.message || "Failed to load LOV details")
       }
@@ -206,7 +222,7 @@ const Lov = props => {
     }
 
     loadMasterList()
-  }, [isMasterFormPage, isDetailListPage, isDetailFormPage])
+  }, [isMasterFormPage, isDetailListPage, isDetailFormPage, masterSortColumn, masterSortColumnDir])
 
   useEffect(() => {
     if (!isMasterFormPage) {
@@ -234,7 +250,19 @@ const Lov = props => {
     }
 
     loadDetailRows(lovColumnParam)
-  }, [isDetailListPage, lovColumnParam])
+  }, [isDetailListPage, lovColumnParam, detailSortColumn, detailSortColumnDir])
+
+  const handleMasterSortChange = fieldName => {
+    const nextState = getNextSortState(masterSortColumn, masterSortColumnDir, fieldName)
+    setMasterSortColumn(nextState.sortColumn)
+    setMasterSortColumnDir(nextState.sortColumnDir)
+  }
+
+  const handleDetailSortChange = fieldName => {
+    const nextState = getNextSortState(detailSortColumn, detailSortColumnDir, fieldName)
+    setDetailSortColumn(nextState.sortColumn)
+    setDetailSortColumnDir(nextState.sortColumnDir)
+  }
 
   useEffect(() => {
     if (!isDetailFormPage || !lovColumnParam) {
@@ -271,16 +299,18 @@ const Lov = props => {
   }, [isDetailFormPage, isDetailEditMode, lovCodeParam, lovColumnParam])
 
   const masterTableData = useMemo(() => {
-    return {
-      columns: [
-        { label: "Sr.", field: "sr", sort: "asc" },
-        { label: "Column Name", field: "lov_Column", sort: "asc" },
-        { label: "Display Text", field: "display_Text", sort: "asc" },
-        //{ label: "Active", field: "isActive", sort: "asc" },
-        { label: "Action", field: "action", sort: "disabled" },
-      ],
-      rows: masterRows.map((item, index) => ({
-        sr: index + 1,
+    return withAutoSrColumn({
+      columns: buildServerSortColumns({
+        columns: [
+          { label: "Column Name", field: "lov_Column", sort: "asc" },
+          { label: "Display Text", field: "display_Text", sort: "asc" },
+          { label: "Action", field: "action", sort: "disabled" },
+        ],
+        onSort: handleMasterSortChange,
+        activeSortColumn: masterSortColumn,
+        sortColumnDir: masterSortColumnDir,
+      }),
+      rows: masterRows.map(item => ({
         lov_Column: item?.lov_Column || "",
         display_Text: item?.display_Text || "",
         isActive: toBoolean(item?.isActive) ? "Yes" : "No",
@@ -307,22 +337,23 @@ const Lov = props => {
           </div>
         ),
       })),
-    }
-  }, [masterRows, navigate])
+    })
+  }, [masterRows, navigate, masterSortColumn, masterSortColumnDir])
 
   const detailTableData = useMemo(() => {
-    return {
-      columns: [
-        { label: "Sr.", field: "sr", sort: "asc" },
-        { label: "Code", field: "lov_Code", sort: "asc" },
-        { label: "Description", field: "lov_Desc", sort: "asc" },
-       // { label: "Display Text", field: "display_Text", sort: "asc" },
-        { label: "Display Order", field: "displayOrder", sort: "asc" },
-       // { label: "Active", field: "isActive", sort: "asc" },
-        { label: "Action", field: "action", sort: "disabled" },
-      ],
-      rows: detailRows.map((item, index) => ({
-        sr: index + 1,
+    return withAutoSrColumn({
+      columns: buildServerSortColumns({
+        columns: [
+          { label: "Code", field: "lov_Code", sort: "asc" },
+          { label: "Description", field: "lov_Desc", sort: "asc" },
+          { label: "Display Order", field: "displayOrder", sort: "asc" },
+          { label: "Action", field: "action", sort: "disabled" },
+        ],
+        onSort: handleDetailSortChange,
+        activeSortColumn: detailSortColumn,
+        sortColumnDir: detailSortColumnDir,
+      }),
+      rows: detailRows.map(item => ({
         lov_Code: item?.lov_Code || "",
         lov_Desc: item?.lov_Desc || "",
         display_Text: item?.display_Text || "",
@@ -348,8 +379,8 @@ const Lov = props => {
           </div>
         ),
       })),
-    }
-  }, [detailRows, lovColumnParam, navigate])
+    })
+  }, [detailRows, lovColumnParam, navigate, detailSortColumn, detailSortColumnDir])
 
   const handleMasterChange = event => {
     const { name, value, type } = event.target
@@ -488,7 +519,7 @@ const Lov = props => {
             <Spinner color="primary" />
           </div>
         ) : (
-          <MDBDataTable striped bordered small noBottomColumns data={masterTableData} />
+          <MDBDataTable className="table-auto-sr" striped bordered small noBottomColumns data={masterTableData} />
         )}
       </CardBody>
     </Card>

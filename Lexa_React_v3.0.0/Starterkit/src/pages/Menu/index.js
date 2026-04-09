@@ -3,11 +3,15 @@ import { Alert, Button, Card, CardBody, Col, Row, Spinner } from "reactstrap"
 import { MDBDataTable } from "mdbreact"
 import { connect } from "react-redux"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
+import { buildServerSortColumns, getNextSortState, withAutoSrColumn } from "../../common/common"
 
 import { setBreadcrumbItems } from "../../store/actions"
 import { getMenuById, getMenusPages, saveMenu } from "../../helpers/fakebackend_helper"
 import { showError, showSuccess } from "../../Pop_show/alertService"
 import MenuForm from "./MenuForm"
+
+const MENU_LIST_SORT_COLUMN = "name"
+const MENU_LIST_SORT_DIR = "asc"
 
 const toBoolean = value => {
   if (typeof value === "boolean") return value
@@ -35,6 +39,8 @@ const Menus = props => {
   const [rows, setRows] = useState([])
   const [parentOptions, setParentOptions] = useState([])
   const [formTitle, setFormTitle] = useState(isEditMode ? "Edit Menu" : "Create Menu")
+  const [sortColumn, setSortColumn] = useState(MENU_LIST_SORT_COLUMN)
+  const [sortColumnDir, setSortColumnDir] = useState(MENU_LIST_SORT_DIR)
   const [formData, setFormData] = useState({
     id: 0,
     parentId: 0,
@@ -61,6 +67,8 @@ const Menus = props => {
       const response = await getMenusPages({
         start: 0,
         length: 10,
+        sortColumn,
+        sortColumnDir,
       })
 
       if (!(response?.isSuccess && response?.statusCode === 1)) {
@@ -84,7 +92,13 @@ const Menus = props => {
     if (!isFormPage) {
       loadMenus()
     }
-  }, [isFormPage])
+  }, [isFormPage, sortColumn, sortColumnDir])
+
+  const handleSortChange = fieldName => {
+    const nextState = getNextSortState(sortColumn, sortColumnDir, fieldName)
+    setSortColumn(nextState.sortColumn)
+    setSortColumnDir(nextState.sortColumnDir)
+  }
 
   useEffect(() => {
     const loadParentMenus = async () => {
@@ -96,6 +110,7 @@ const Menus = props => {
         const response = await getMenusPages({
           start: 0,
           length: 100,
+          sortColumn: MENU_LIST_SORT_COLUMN,
           sortColumnDir: "asc",
         })
 
@@ -180,19 +195,22 @@ const Menus = props => {
   }, [isFormPage, isEditMode, menuId])
 
   const data = useMemo(() => {
-    return {
-      columns: [
-        { label: "Sr.", field: "sr", sort: "asc" },
-        { label: "Name", field: "name", sort: "asc" },
-        { label: "Parent", field: "parentId", sort: "asc" },
-        { label: "Controller", field: "controller", sort: "asc" },
-        { label: "URL", field: "url", sort: "disabled" },
-        { label: "Is Admin", field: "isAdmin", sort: "asc" },
-        { label: "Super Admin", field: "isSuperAdmin", sort: "asc" },
-        { label: "Action", field: "action", sort: "disabled" },
-      ],
-      rows: rows.map((item, index) => ({
-        sr: index + 1,
+    return withAutoSrColumn({
+      columns: buildServerSortColumns({
+        columns: [
+          { label: "Name", field: "name", sort: "asc" },
+          { label: "Parent", field: "parentId", sort: "asc" },
+          { label: "Controller", field: "controller", sort: "asc" },
+          { label: "URL", field: "url", sort: "disabled" },
+          { label: "Is Admin", field: "isAdmin", sort: "asc" },
+          { label: "Super Admin", field: "isSuperAdmin", sort: "asc" },
+          { label: "Action", field: "action", sort: "disabled" },
+        ],
+        onSort: handleSortChange,
+        activeSortColumn: sortColumn,
+        sortColumnDir,
+      }),
+      rows: rows.map(item => ({
         id: item.id,
         name: item.name || "",
         parentId: item.parentId ?? 0,
@@ -214,8 +232,8 @@ const Menus = props => {
           </div>
         ),
       })),
-    }
-  }, [rows, navigate])
+    })
+  }, [rows, navigate, sortColumn, sortColumnDir])
 
   const handleChange = event => {
     const { name, value, type } = event.target
@@ -317,7 +335,7 @@ const Menus = props => {
                     <Spinner color="primary" />
                   </div>
                 ) : (
-                  <MDBDataTable striped bordered small noBottomColumns data={data} />
+                  <MDBDataTable className="table-auto-sr" striped bordered small noBottomColumns data={data} />
                 )}
               </CardBody>
             </Card>

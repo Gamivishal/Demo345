@@ -3,11 +3,15 @@ import { Alert, Button, Card, CardBody, Col, Row, Spinner } from "reactstrap"
 import { MDBDataTable } from "mdbreact"
 import { connect } from "react-redux"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
+import { buildServerSortColumns, getNextSortState, withAutoSrColumn } from "../../common/common"
 
 import { setBreadcrumbItems } from "../../store/actions"
 import { deleteUserById, getRoleNames, getUserById, getUsersPages, saveUser } from "../../helpers/fakebackend_helper"
 import { showConfirm, showError, showSuccess } from "../../Pop_show/alertService"
 import UserForm from "./UserForm"
+
+const USER_LIST_SORT_COLUMN = "userName"
+const USER_LIST_SORT_DIR = "asc"
 
 const Users = props => {
   document.title = "Users | Lexa - Responsive Bootstrap 5 Admin Dashboard"
@@ -25,6 +29,8 @@ const Users = props => {
   const [formError, setFormError] = useState("")
   const [roleOptions, setRoleOptions] = useState([])
   const [rows, setRows] = useState([])
+  const [sortColumn, setSortColumn] = useState(USER_LIST_SORT_COLUMN)
+  const [sortColumnDir, setSortColumnDir] = useState(USER_LIST_SORT_DIR)
   const [formTitle, setFormTitle] = useState(isEditMode ? "Edit User" : "Create User")
   const [formData, setFormData] = useState({
     id: 0,
@@ -49,6 +55,8 @@ const Users = props => {
       const response = await getUsersPages({
         start: 0,
         length: 10,
+        sortColumn,
+        sortColumnDir,
       })
 
       if (!(response?.isSuccess && response?.statusCode === 1)) {
@@ -72,7 +80,13 @@ const Users = props => {
     if (!isFormPage) {
       loadUsers()
     }
-  }, [isFormPage])
+  }, [isFormPage, sortColumn, sortColumnDir])
+
+  const handleSortChange = fieldName => {
+    const nextState = getNextSortState(sortColumn, sortColumnDir, fieldName)
+    setSortColumn(nextState.sortColumn)
+    setSortColumnDir(nextState.sortColumnDir)
+  }
 
   useEffect(() => {
     const loadRoles = async () => {
@@ -148,20 +162,21 @@ const Users = props => {
   }, [isFormPage, isEditMode, userId])
 
   const data = useMemo(() => {
-    return {
-      columns: [
-        { label: "Sr.", field: "sr", sort: "asc" },
-        // { label: "Id", field: "id", sort: "asc" },
-        { label: "User Name", field: "userName", sort: "asc" },
-        { label: "Email", field: "email", sort: "asc" },
-        { label: "Mobile Number", field: "mobileNumber", sort: "asc" },
-        // { label: "Role Id", field: "roleId", sort: "asc" },
-        { label: "Role Name", field: "rolename", sort: "asc" },
-        { label: "Active", field: "isActive", sort: "asc" },
-        { label: "Action", field: "action", sort: "disabled" },
-      ],
-      rows: rows.map((item, index) => ({
-        sr: index + 1,
+    return withAutoSrColumn({
+      columns: buildServerSortColumns({
+        columns: [
+          { label: "User Name", field: "userName", sort: "asc" },
+          { label: "Email", field: "email", sort: "asc" },
+          { label: "Mobile Number", field: "mobileNumber", sort: "asc" },
+          { label: "Role Name", field: "rolename", sort: "asc" },
+          { label: "Active", field: "isActive", sort: "disabled" },
+          { label: "Action", field: "action", sort: "disabled" },
+        ],
+        onSort: handleSortChange,
+        activeSortColumn: sortColumn,
+        sortColumnDir,
+      }),
+      rows: rows.map(item => ({
         id: item.id,
         userName: item.userName || "",
         email: item.email || "",
@@ -197,8 +212,8 @@ const Users = props => {
           </div>
         ),
       })),
-    }
-  }, [rows])
+    })
+  }, [rows, sortColumn, sortColumnDir])
 
   const handleChange = event => {
     const { name, value, type, checked } = event.target
@@ -317,7 +332,7 @@ const Users = props => {
                     <Spinner color="primary" />
                   </div>
                 ) : (
-                  <MDBDataTable striped bordered small noBottomColumns data={data} />
+                  <MDBDataTable className="table-auto-sr" striped bordered small noBottomColumns data={data} />
                 )}
               </CardBody>
             </Card>

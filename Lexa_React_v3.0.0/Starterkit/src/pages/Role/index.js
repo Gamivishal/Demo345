@@ -3,6 +3,7 @@ import { Alert, Button, Card, CardBody, Col, Row, Spinner } from "reactstrap"
 import { MDBDataTable } from "mdbreact"
 import { connect } from "react-redux"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
+import { buildServerSortColumns, getNextSortState, withAutoSrColumn } from "../../common/common"
 
 import { setBreadcrumbItems } from "../../store/actions"
 import {
@@ -14,6 +15,9 @@ import {
 } from "../../helpers/fakebackend_helper"
 import { showConfirm, showError, showSuccess } from "../../Pop_show/alertService"
 import RoleForm from "./RoleForm"
+
+const ROLE_LIST_SORT_COLUMN = "name"
+const ROLE_LIST_SORT_DIR = "asc"
 
 const toBoolean = value => {
   if (typeof value === "boolean") return value
@@ -40,6 +44,8 @@ const Roles = props => {
   const [error, setError] = useState("")
   const [formError, setFormError] = useState("")
   const [rows, setRows] = useState([])
+  const [sortColumn, setSortColumn] = useState(ROLE_LIST_SORT_COLUMN)
+  const [sortColumnDir, setSortColumnDir] = useState(ROLE_LIST_SORT_DIR)
   const [menuOptions, setMenuOptions] = useState([])
   const [formTitle, setFormTitle] = useState(isEditMode ? "Edit Role" : "Create Role")
   const [formData, setFormData] = useState({
@@ -63,6 +69,8 @@ const Roles = props => {
       const response = await getRolesPages({
         start: 0,
         length: 10,
+        sortColumn,
+        sortColumnDir,
       })
 
       if (!(response?.isSuccess && response?.statusCode === 1)) {
@@ -86,7 +94,13 @@ const Roles = props => {
     if (!isFormPage) {
       loadRoles()
     }
-  }, [isFormPage])
+  }, [isFormPage, sortColumn, sortColumnDir])
+
+  const handleSortChange = fieldName => {
+    const nextState = getNextSortState(sortColumn, sortColumnDir, fieldName)
+    setSortColumn(nextState.sortColumn)
+    setSortColumnDir(nextState.sortColumnDir)
+  }
 
   useEffect(() => {
     const loadMenus = async () => {
@@ -158,17 +172,20 @@ const Roles = props => {
   }, [isFormPage, isEditMode, roleId])
 
   const data = useMemo(() => {
-    return {
-      columns: [
-        { label: "Sr.", field: "sr", sort: "asc" },
-        { label: "Name", field: "name", sort: "asc" },
-        { label: "Is Admin", field: "isAdmin", sort: "asc" },
-        { label: "Active", field: "isActive", sort: "asc" },
-        { label: "Selected Menu", field: "selectedMenu", sort: "disabled" },
-        { label: "Action", field: "action", sort: "disabled" },
-      ],
-      rows: rows.map((item, index) => ({
-        sr: index + 1,
+    return withAutoSrColumn({
+      columns: buildServerSortColumns({
+        columns: [
+          { label: "Name", field: "name", sort: "asc" },
+          { label: "Is Admin", field: "isAdmin", sort: "asc" },
+          { label: "Active", field: "isActive", sort: "asc" },
+          { label: "Selected Menu", field: "selectedMenu", sort: "asc" },
+          { label: "Action", field: "action", sort: "disabled" },
+        ],
+        onSort: handleSortChange,
+        activeSortColumn: sortColumn,
+        sortColumnDir,
+      }),
+      rows: rows.map(item => ({
         id: item.id,
         name: item.name || "",
         isAdmin: item.isAdmin ? "Yes" : "No",
@@ -202,8 +219,8 @@ const Roles = props => {
           </div>
         ),
       })),
-    }
-  }, [rows, deletingId, navigate])
+    })
+  }, [rows, deletingId, navigate, sortColumn, sortColumnDir])
 
   const handleChange = event => {
     const { name, value, type, checked } = event.target
@@ -327,7 +344,7 @@ const Roles = props => {
                     <Spinner color="primary" />
                   </div>
                 ) : (
-                  <MDBDataTable striped bordered small noBottomColumns data={data} />
+                  <MDBDataTable className="table-auto-sr" striped bordered small noBottomColumns data={data} />
                 )}
               </CardBody>
             </Card>

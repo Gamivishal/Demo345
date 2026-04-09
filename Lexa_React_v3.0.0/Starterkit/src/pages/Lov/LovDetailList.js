@@ -23,7 +23,7 @@ const LovDetailList = ({ lovColumn, data, loading, error, onAdd, onBack }) => {
             <Spinner color="primary" />
           </div>
         ) : (
-          <MDBDataTable striped bordered small noBottomColumns data={data} />
+          <MDBDataTable className="table-auto-sr" striped bordered small noBottomColumns data={data} />
         )}
       </CardBody>
     </Card>
