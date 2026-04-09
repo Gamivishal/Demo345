@@ -131,7 +131,7 @@ const Users = props => {
         setFormData({
           id: user.id || 0,
           userName: user.userName || "",
-          password: user.password || "",
+          password: "",
           email: user.email || "",
           mobileNumber: user.mobileNumber || "",
           roleId: user.roleId ?? "",
@@ -247,11 +247,14 @@ const Users = props => {
       const payload = {
         id: isEditMode ? Number(formData.id) || userId : 0,
         userName: formData.userName,
-        password: formData.password,
         isDeleted: Boolean(formData.isDeleted),
         email: formData.email,
         mobileNumber: formData.mobileNumber,
         roleId: Number(formData.roleId) || 0,
+      }
+
+      if (!isEditMode) {
+        payload.password = formData.password
       }
 
       const response = await saveUser(payload)
@@ -290,6 +293,7 @@ const Users = props => {
                 formError={formError}
                 formData={formData}
                 roleOptions={roleOptions}
+                isEditMode={isEditMode}
                 saving={saving}
                 onChange={handleChange}
                 onRoleChange={handleRoleChange}

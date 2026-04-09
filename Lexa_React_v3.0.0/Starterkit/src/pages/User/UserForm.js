@@ -19,6 +19,7 @@ const UserForm = ({
   formError,
   formData,
   roleOptions,
+  isEditMode,
   saving,
   onChange,
   onRoleChange,
@@ -53,16 +54,18 @@ const UserForm = ({
                 placeholder="Enter user name"
               />
             </Col>
-            <Col md={6}>
-              <Label>Password</Label>
-              <Input
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={onChange}
-                placeholder="Enter password"
-              />
-            </Col>
+            {!isEditMode && (
+              <Col md={6}>
+                <Label>Password</Label>
+                <Input
+                  name="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={onChange}
+                  placeholder="Enter password"
+                />
+              </Col>
+            )}
             <Col md={6}>
               <Label>Email</Label>
               <Input
@@ -82,7 +85,7 @@ const UserForm = ({
               />
             </Col>
             <Col md={6}>
-              <Label>Role Id</Label>
+              <Label>Select Role</Label>
               <Select
                 classNamePrefix="select2-selection"
                 placeholder="Select role"

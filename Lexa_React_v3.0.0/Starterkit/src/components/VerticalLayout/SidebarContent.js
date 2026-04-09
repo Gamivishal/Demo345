@@ -185,11 +185,11 @@ const SidebarContent = props => {
       <SimpleBar style={{ maxHeight: "100%" }} ref={ref}>
         <div id="sidebar-menu">
           <ul className="metismenu list-unstyled" id="side-menu">
-            <li className="menu-title">{props.t("Main")} </li>
+            {/* <li className="menu-title">{props.t("Main")} </li> */}
 
             {dynamicMenu.length > 0 && (
               <>
-                <li className="menu-title">{props.t("Dynamic Menu")}</li>
+                <li className="menu-title">{props.t("Menu")}</li>
                 {dynamicMenu.map(parent => (
                   <li key={`dynamic-parent-${parent.id}`}>
                     <Link
@@ -222,14 +222,14 @@ const SidebarContent = props => {
               </Link>
             </li>
 
-            <li>
+            {/* <li>
               <Link to="#" className=" waves-effect">
                 <i className="mdi mdi-calendar-check"></i>
                 <span>{props.t("Calendar")}</span>
               </Link>
-            </li>
+            </li> */}
 
-            <li>
+            {/* <li>
               <Link to="/#" className="has-arrow waves-effect">
                 <i className="mdi mdi-email-outline"></i>
                 <span>{props.t("Email")}</span>
@@ -245,26 +245,26 @@ const SidebarContent = props => {
                   <Link to="#">{props.t("Email Compose")} </Link>
                 </li>
               </ul>
-            </li>
+            </li> */}
 
-            <li>
+            {/* <li>
               <Link to="#" className=" waves-effect">
                 <i className="mdi mdi-chat-processing-outline"></i>
                 <span className="badge rounded-pill bg-danger float-end">Hot</span>
                 <span>Chat</span>
               </Link>
-            </li>
+            </li> */}
 
-            <li>
+            {/* <li>
               <Link to="#" className=" waves-effect">
                 <i className="mdi mdi-billboard"></i>
                 <span className="badge rounded-pill bg-success float-end">New</span>
                 <span>Kanban Board</span>
               </Link>
-            </li>
+            </li> */}
 
-            <li className="menu-title">{props.t("Components")}</li>
-            <li>
+            {/* <li className="menu-title">{props.t("Components")}</li> */}
+            {/* <li>
               <Link to="/#" className="has-arrow waves-effect">
                 <i className="mdi mdi-buffer"></i>
                 <span>{props.t("UI Elements")}</span>
@@ -334,9 +334,9 @@ const SidebarContent = props => {
                   <Link to="#">{props.t("Video")}</Link>
                 </li>
               </ul>
-            </li>
+            </li> */}
 
-            <li>
+            {/* <li>
               <Link to="/#" className="waves-effect">
                 <i className="mdi mdi-clipboard-outline"></i>
                 <span className="badge rounded-pill bg-success float-end">6</span>
@@ -359,9 +359,9 @@ const SidebarContent = props => {
                   <Link to="#">{props.t("Form File Upload")} </Link>
                 </li>
               </ul>
-            </li>
+            </li> */}
 
-            <li>
+            {/* <li>
               <Link to="/#" className="has-arrow waves-effect">
                 <i className="mdi mdi-chart-line"></i>
                 <span>{props.t("Charts")}</span>
@@ -390,9 +390,9 @@ const SidebarContent = props => {
                   </Link>
                 </li>
               </ul>
-            </li>
+            </li> */}
 
-            <li>
+            {/* <li>
               <Link to="/#" className="has-arrow waves-effect">
                 <i className="mdi mdi-format-list-bulleted-type"></i>
                 <span>{props.t("Tables")}</span>
@@ -413,9 +413,9 @@ const SidebarContent = props => {
                   <Link to="#">{props.t("Editable Table")}</Link>
                 </li>
               </ul>
-            </li>
+            </li> */}
 
-            <li>
+            {/* <li>
               <Link to="/#" className="has-arrow waves-effect">
                 <i className="mdi mdi-album"></i>
                 <span>{props.t("Icons")}</span>
@@ -442,9 +442,9 @@ const SidebarContent = props => {
                   <Link to="#">{props.t("Typicons Icons")}</Link>
                 </li>
               </ul>
-            </li>
+            </li> */}
 
-            <li>
+            {/* <li>
               <Link to="/#" className="waves-effect">
                 <span className="badge rounded-pill bg-danger float-end">2</span>
                 <i className="mdi mdi-google-maps"></i>
@@ -459,11 +459,11 @@ const SidebarContent = props => {
                 </li>
 
               </ul>
-            </li>
+            </li> */}
 
-            <li className="menu-title">Extras</li>
+            {/* <li className="menu-title">Extras</li> */}
 
-            <li>
+            {/* <li>
               <Link to="/#" className="has-arrow waves-effect">
                 <i className="mdi mdi-account-box"></i>
                 <span>{props.t("Authentication")}</span>
@@ -484,9 +484,9 @@ const SidebarContent = props => {
                   <Link to="/auth-lock-screen">{props.t("Lock Screen")}</Link>
                 </li>
               </ul>
-            </li>
+            </li> */}
 
-            <li>
+            {/* <li>
               <Link to="/#" className="has-arrow waves-effect">
                 <i className="mdi mdi-text-box-multiple-outline"></i>
                 <span>{props.t("Extra Pages")}</span>
@@ -511,8 +511,8 @@ const SidebarContent = props => {
                   <Link to="/pages-500">{props.t("Error 500")}</Link>
                 </li>
               </ul>
-            </li>
-            <li>
+            </li> */}
+            {/* <li>
               <Link to="/#" className="has-arrow waves-effect">
                 <i className="mdi mdi-share-variant"></i>
                 <span>{props.t("Multi Level")}</span>
@@ -535,7 +535,7 @@ const SidebarContent = props => {
                   </ul>
                 </li>
               </ul>
-            </li>
+            </li> */}
           </ul>
         </div>
       </SimpleBar>
