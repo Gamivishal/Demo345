@@ -182,6 +182,72 @@ const getMenuById = async id => {
   }
 }
 
+const getLovColumns = async () => {
+  try {
+    return await get("/Lov/Get", {
+      params: { flag: "LI" },
+    })
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ||
+      error?.message ||
+      "LOV columns API call failed"
+    )
+  }
+}
+
+const getLovMasterByColumn = async lovColumn => {
+  try {
+    return await get("/Lov/Get", {
+      params: {
+        flag: "LE",
+        lovColumn,
+      },
+    })
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ||
+      error?.message ||
+      "LOV master fetch failed"
+    )
+  }
+}
+
+const getLovDetailsByColumn = async lovColumn => {
+  try {
+    return await get("/Lov/Get", {
+      params: {
+        flag: "LDI",
+        lovColumn,
+      },
+    })
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ||
+      error?.message ||
+      "LOV detail list API call failed"
+    )
+  }
+}
+
+const getLovDetailByCode = async (lovColumn, lovCode) => {
+  try {
+    return await get("/Lov/Get", {
+      params: {
+        flag: "LDE",
+        lovColumn,
+        lovCode,
+      },
+    })
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ||
+      error?.message ||
+      "LOV detail fetch failed"
+    )
+  }
+}
+
 const saveUser = async payload => {
   try {
     return await post("/User/Add", payload)
@@ -214,6 +280,30 @@ const saveMenu = async payload => {
       error?.response?.data?.message ||
       error?.message ||
       "Menu save failed"
+    )
+  }
+}
+
+const saveLovMaster = async payload => {
+  try {
+    return await post("/Lov/SaveMaster", payload)
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ||
+      error?.message ||
+      "LOV master save failed"
+    )
+  }
+}
+
+const saveLovDetail = async payload => {
+  try {
+    return await post("/Lov/SaveDetail", payload)
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ||
+      error?.message ||
+      "LOV detail save failed"
     )
   }
 }
@@ -356,12 +446,18 @@ export {
   getMenuById,
   getUserById,
   getRoleById,
+  getLovColumns,
+  getLovMasterByColumn,
+  getLovDetailsByColumn,
+  getLovDetailByCode,
   getRoleNames,
   getRoleMenuPages,
   getMenuAccessPages,
   saveUser,
   saveRole,
   saveMenu,
+  saveLovMaster,
+  saveLovDetail,
   deleteUserById,
   deleteRoleById,
   buildPageParams,

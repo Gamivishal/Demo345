@@ -22,6 +22,7 @@ import Dashboard from "../pages/Dashboard/index"
 import Users from "../pages/User"
 import Roles from "../pages/Role"
 import Menus from "../pages/Menu"
+import Lov from "../pages/Lov"
 
 
 //Extra Pages
@@ -47,6 +48,19 @@ const userRoutes = [
   { path: "/menus", component: <Menus /> },
   { path: "/menus/manage", component: <Menus /> },
   { path: "/menus/manage/:id", component: <Menus /> },
+
+  { path: "/lov", component: <Lov /> },
+  { path: "/lovs", component: <Lov /> },
+  { path: "/lov/manage", component: <Lov /> },
+  { path: "/lovs/manage", component: <Lov /> },
+  { path: "/lov/manage/:lovColumn", component: <Lov /> },
+  { path: "/lovs/manage/:lovColumn", component: <Lov /> },
+  { path: "/lov/details/:lovColumn", component: <Lov /> },
+  { path: "/lovs/details/:lovColumn", component: <Lov /> },
+  { path: "/lov/details/:lovColumn/manage", component: <Lov /> },
+  { path: "/lovs/details/:lovColumn/manage", component: <Lov /> },
+  { path: "/lov/details/:lovColumn/manage/:lovCode", component: <Lov /> },
+  { path: "/lovs/details/:lovColumn/manage/:lovCode", component: <Lov /> },
 
   { path: "/pages-blank", component: <PagesBlank /> },
 
