@@ -152,9 +152,10 @@ const Login = props => {
                                             </div>
                                         </Row>
                                         <Row className="form-group mb-0">
-                                            <div className="col-12 mt-4">
-                                                <Link to="/forgot-password" className="text-muted"><i className="mdi mdi-lock"></i> Forgot your password?</Link>
-                                            </div>
+                                          <div className="col-12 mt-4 d-flex flex-column align-items-start gap-2">
+                                            <Link to="/forgot-password" className="text-muted"><i className="mdi mdi-lock"></i> Forgot your password?</Link>
+                                            <Link to="/forgot-password2" className="text-muted"><i className="mdi mdi-lock"></i> Forgot your password2?</Link>
+                                          </div>
                                         </Row>
                                     </Form>
                                 </div>

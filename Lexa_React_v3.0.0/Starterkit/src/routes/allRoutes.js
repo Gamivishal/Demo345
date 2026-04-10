@@ -10,6 +10,9 @@ import Login from "../pages/Authentication/Login"
 import Logout from "../pages/Authentication/Logout"
 import Register from "../pages/Authentication/Register"
 import ForgetPwd from "../pages/Authentication/ForgetPassword"
+import ForgetPwd2 from "../pages/Authentication/ForgetPassword2"
+import OtpPage from "../pages/Authentication/OtpPage"
+import ResetPasswordPage from "../pages/Authentication/ResetPasswordPage"
 
 // Inner Authentication
 import Login1 from "../pages/AuthenticationInner/Login"
@@ -61,7 +64,6 @@ const userRoutes = [
   { path: "/lovs/details/:lovColumn/manage", component: <Lov /> },
   { path: "/lov/details/:lovColumn/manage/:lovCode", component: <Lov /> },
   { path: "/lovs/details/:lovColumn/manage/:lovCode", component: <Lov /> },
-
   { path: "/pages-blank", component: <PagesBlank /> },
 
   // this route should be at the end of all other routes
@@ -76,7 +78,10 @@ const authRoutes = [
   { path: "/logout", component: <Logout /> },
   { path: "/login", component: <Login /> },
   { path: "/forgot-password", component: <ForgetPwd /> },
+  { path: "/forgot-password2", component: <ForgetPwd2 /> },
   { path: "/register", component: <Register /> },
+  { path: "/otp", component: <OtpPage /> },
+  { path: "/reset-password", component: <ResetPasswordPage /> },
 
   { path: "/pages-404", component: <Pages404 /> },
   { path: "/pages-500", component: <Pages500 /> },
