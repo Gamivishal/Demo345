@@ -136,9 +136,9 @@ const Login = props => {
                                         <Row className="mb-3 mt-4">
                                             <div className="col-6">
                                                 <div className="form-check">
-                                                    <input type="checkbox" className="form-check-input" id="customControlInline" />
+                                                    {/* <input type="checkbox" className="form-check-input" id="customControlInline" />
                                                     <label className="form-check-label" htmlFor="customControlInline">Remember me
-                                                    </label>
+                                                    </label> */}
                                                 </div>
                                             </div>
                                             <div className="col-6 text-end">
