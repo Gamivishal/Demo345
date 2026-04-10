@@ -6,8 +6,8 @@ import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { buildServerSortColumns, getNextSortState, withAutoSrColumn } from "../../common/common"
 
 import { setBreadcrumbItems } from "../../store/actions"
-import { getMenuById, getMenusPages, saveMenu } from "../../helpers/fakebackend_helper"
-import { showError, showSuccess } from "../../Pop_show/alertService"
+import { deleteMenuById, getMenuById, getMenusPages, saveMenu } from "../../helpers/fakebackend_helper"
+import { showConfirm, showError, showSuccess } from "../../Pop_show/alertService"
 import MenuForm from "./MenuForm"
 
 const MENU_LIST_SORT_COLUMN = "name"
@@ -34,6 +34,7 @@ const Menus = props => {
 
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [deletingId, setDeletingId] = useState(0)
   const [error, setError] = useState("")
   const [formError, setFormError] = useState("")
   const [rows, setRows] = useState([])
@@ -229,11 +230,49 @@ const Menus = props => {
             >
               <i className="mdi mdi-pencil font-size-18" />
             </Button>
+            <Button
+              color="link"
+              className="p-0 text-danger"
+              title="Delete"
+              type="button"
+              disabled={deletingId === item.id}
+              onClick={() => handleDelete(item.id)}
+            >
+              {deletingId === item.id ? (
+                <Spinner size="sm" />
+              ) : (
+                <i className="mdi mdi-trash-can-outline font-size-18" />
+              )}
+            </Button>
           </div>
         ),
       })),
     })
-  }, [rows, navigate, sortColumn, sortColumnDir])
+  }, [rows, navigate, sortColumn, sortColumnDir, deletingId])
+
+  const handleDelete = async id => {
+    const isConfirmed = await showConfirm("Are you sure you want to delete this menu?", "Delete", "Cancel")
+    if (!isConfirmed) {
+      return
+    }
+
+    setDeletingId(id)
+    try {
+      const response = await deleteMenuById(id)
+      if (response?.statusCode === 1) {
+        await showSuccess(response?.message || "Menu deleted successfully")
+        await loadMenus()
+        return
+      }
+
+      throw new Error(response?.message || "Failed to delete menu")
+    } catch (err) {
+      const errorMessage = err?.message || err || "Failed to delete menu"
+      await showError(errorMessage)
+    } finally {
+      setDeletingId(0)
+    }
+  }
 
   const handleChange = event => {
     const { name, value, type } = event.target

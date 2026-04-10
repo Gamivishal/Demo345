@@ -381,6 +381,18 @@ const deleteRoleById = async id => {
   }
 }
 
+const deleteMenuById = async id => {
+  try {
+    return await del(`https://localhost:7281/api/Menu/Delete?id=${id}`)
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ||
+      error?.message ||
+      "Menu delete failed"
+    )
+  }
+}
+
 // postForgetPwd
 const postFakeForgetPwd = data => post(url.POST_FAKE_PASSWORD_FORGET, data);
 
@@ -464,5 +476,6 @@ export {
   saveLovDetail,
   deleteUserById,
   deleteRoleById,
+  deleteMenuById,
   buildPageParams,
 }
