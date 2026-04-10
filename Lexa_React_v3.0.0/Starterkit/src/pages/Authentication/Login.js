@@ -134,15 +134,21 @@ const Login = props => {
                                             ) : null}
                                         </div>
                                         <Row className="mb-3 mt-4">
-                                            <div className="col-6">
-                                                <div className="form-check">
-                                                    {/* <input type="checkbox" className="form-check-input" id="customControlInline" />
-                                                    <label className="form-check-label" htmlFor="customControlInline">Remember me
-                                                    </label> */}
-                                                </div>
-                                            </div>
-                                            <div className="col-6 text-end">
-                                                <button className="btn btn-primary w-md waves-effect waves-light" type="submit">Log In</button>
+                                            <div className="col-12 d-flex justify-content-center gap-3">
+                                                <button
+                                                  className="btn btn-primary waves-effect waves-light"
+                                                  type="submit"
+                                                  style={{ minWidth: "140px", height: "46px", borderRadius: "8px" }}
+                                                >
+                                                  Log In
+                                                </button>
+                                                <Link
+                                                  to="/register"
+                                                  className="btn btn-outline-primary waves-effect"
+                                                  style={{ minWidth: "140px", height: "46px", borderRadius: "8px", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+                                                >
+                                                  Signup
+                                                </Link>
                                             </div>
                                         </Row>
                                         <Row className="form-group mb-0">
@@ -154,7 +160,7 @@ const Login = props => {
                                 </div>
                             </CardBody>
                         </Card>
-                        <Link
+                        {/* <Link
                               to="#"
                               className="social-list-item bg-danger text-white border-danger"
                               onClick={e => {
@@ -165,9 +171,8 @@ const Login = props => {
                               <i className="mdi mdi-google" />
                             </Link>
                         <div className="mt-5 text-center">
-                            <p>Don't have an account ? <Link to="/register" className="text-primary"> Signup Now </Link></p>
                             © {new Date().getFullYear()} Lexa <span className="d-none d-sm-inline-block"> - Crafted with <i className="mdi mdi-heart text-danger"></i> by Themesbrand.</span>
-                        </div>
+                        </div> */}
                     </Col>
                 </Row>
             </Container>

@@ -82,10 +82,12 @@ useEffect(() => {
                                         <img src={logoLight} alt="" height="30" className="auth-logo-light" />
                                     </Link>
                                 </h3>
+                                
                                 <div className="p-3">
                                     <h4 className="text-muted font-size-18 mb-1 text-center">Free Register</h4>
                                     <p className="text-muted text-center">Get your free Lexa account now.</p>
                                     <Form
+                                      id="register-form"
                                       className="form-horizontal mt-4"
                                       onSubmit={(e) => {
                                         e.preventDefault();
@@ -158,13 +160,25 @@ useEffect(() => {
                                               <FormFeedback type="invalid">{validation.errors.password}</FormFeedback>
                                             ) : null}
                                         </div>
-
-                                        <div className="mb-3 row mt-4">
-                                            <div className="col-12 text-end">
-                                                <button className="btn btn-primary w-md waves-effect waves-light" type="submit">Register</button>
-                                            </div>
-                                        </div>
-
+  <div className="mt-5 text-center">
+                          <div className="d-flex justify-content-center gap-3 flex-wrap mb-4">
+                            <Link
+                              to="/login"
+                              className="btn btn-primary waves-effect waves-light"
+                              style={{ minWidth: "140px", height: "46px", borderRadius: "8px", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+                            >
+                              Back to Login
+                            </Link>
+                            <button
+                              type="submit"
+                              form="register-form"
+                              className="btn btn-outline-primary waves-effect"
+                              style={{ minWidth: "140px", height: "46px", borderRadius: "8px" }}
+                            >
+                             Register
+                            </button>
+                          </div>
+                        </div>
                                         <div className="mb-0 row">
                                             <div className="col-12 mt-4">
                                                 <p className="text-muted mb-0 font-size-14">By registering you agree to the Lexa <Link to="#" className="text-primary">Terms of Use</Link></p>
@@ -174,10 +188,26 @@ useEffect(() => {
                                 </div>
                             </CardBody>
                         </Card>
-                        <div className="mt-5 text-center">
-                            <p>Already have an account ? <Link to="/login" className="text-primary"> Login </Link> </p>
-                            © <script>document.write(new Date().getFullYear())</script> Lexa <span className="d-none d-sm-inline-block"> - Crafted with <i className="mdi mdi-heart text-danger"></i> by Themesbrand.</span>
-                        </div>
+                        {/* <div className="mt-5 text-center">
+                          <div className="d-flex justify-content-center gap-3 flex-wrap mb-4">
+                            <Link
+                              to="/login"
+                              className="btn btn-primary waves-effect waves-light"
+                              style={{ minWidth: "140px", height: "46px", borderRadius: "8px", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+                            >
+                              Back to Login
+                            </Link>
+                            <button
+                              type="submit"
+                              form="register-form"
+                              className="btn btn-outline-primary waves-effect"
+                              style={{ minWidth: "140px", height: "46px", borderRadius: "8px" }}
+                            >
+                              Sign Up
+                            </button>
+                          </div>
+                          © {new Date().getFullYear()} Lexa <span className="d-none d-sm-inline-block"> - Crafted with <i className="mdi mdi-heart text-danger"></i> by Themesbrand.</span>
+                        </div> */}
                     </Col>
                 </Row>
             </Container>
