@@ -1,6 +1,21 @@
-import axios from "axios"
-import { del, get, post } from "./api_helper"
-import * as url from "./url_helper"
+import axios from "axios";
+import { del, get, post } from "./api_helper";
+import * as url from "./url_helper";
+
+// Reset Password API
+const resetPassword = async (username) => {
+  try {
+    return await post("/User/ResetPassword", null, {
+      params: { username },
+    });
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ||
+      error?.message ||
+      "Reset password failed"
+    );
+  }
+};
 
 // Gets the logged in user data from local session
 const getLoggedInUser = () => {
@@ -393,6 +408,18 @@ const deleteMenuById = async id => {
   }
 }
 
+const changePassword = async payload => {
+  try {
+    return await post("/ChangePassword/Add", payload)
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ||
+      error?.message ||
+      "Change password failed"
+    )
+  }
+}
+
 // postForgetPwd
 const postFakeForgetPwd = data => post(url.POST_FAKE_PASSWORD_FORGET, data);
 
@@ -477,5 +504,7 @@ export {
   deleteUserById,
   deleteRoleById,
   deleteMenuById,
+  changePassword,
   buildPageParams,
+  resetPassword,
 }

@@ -3,7 +3,7 @@ import { PROFILE_ERROR, PROFILE_SUCCESS, EDIT_PROFILE, RESET_PROFILE_FLAG } from
 export const editProfile = user => {
   return {
     type: EDIT_PROFILE,
-    payload: { user },
+    payload: user,
   }
 }
 

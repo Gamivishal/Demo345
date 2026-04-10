@@ -2,7 +2,7 @@ import React from "react"
 import { Navigate } from "react-router-dom"
 
 // Profile
-import UserProfile from "../pages/Authentication/user-profile"
+import MyProfile from "../pages/Authentication/my-profile"
 
 
 // Authentication related pages
@@ -34,7 +34,7 @@ const userRoutes = [
   { path: "/dashboard", component: <Dashboard /> },
 
   // // //profile
-  { path: "/profile", component: <UserProfile /> },
+  { path: "/profile", component: <MyProfile /> },
 
   { path: "/users", component: <Users /> },
   { path: "/users/manage", component: <Users /> },

@@ -41,10 +41,10 @@ const ProfileMenu = props => {
           />
         </DropdownToggle>
         <DropdownMenu className="dropdown-menu-end">
-          <DropdownItem tag="a" href="/profile">
+          <DropdownItem tag={Link} to="/profile">
             {" "}
             <i className="mdi mdi-account-circle font-size-17 text-muted align-middle me-1"/>
-            {props.t("Profile")}{" "}
+            {props.t("My Profile")}{" "}
           </DropdownItem>
           <DropdownItem tag="a" href="#">
             <i className="mdi mdi-wallet font-size-17 text-muted align-middle me-1"/>
