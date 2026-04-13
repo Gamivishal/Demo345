@@ -169,7 +169,7 @@ const RoleForm = ({
         <Form onSubmit={onSubmit}>
           <Row className="g-3">
             <Col md={6}>
-              <Label>Role Name</Label>
+              <Label>Role Name<span style={{ color: "red" }}>*</span></Label>
               <Input
                 name="name"
                 value={formData.name}
@@ -193,7 +193,7 @@ const RoleForm = ({
             </Col>
 
             <Col md={12}>
-              <Label>Selected Menu</Label>
+              <Label>Selected Menu<span style={{ color: "red" }}>*</span></Label>
               <div className="border rounded p-3" style={{ maxHeight: 280, overflowY: "auto" }}>
                 {rootMenus.length > 0 ? (
                   rootMenus.map(menu => renderMenuNode(menu))

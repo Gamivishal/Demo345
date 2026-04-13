@@ -46,7 +46,7 @@ const UserForm = ({
         <Form onSubmit={onSubmit}>
           <Row className="g-3">
             <Col md={6}>
-              <Label>User Name</Label>
+              <Label>User Name<span style={{ color: "red" }}>*</span></Label>
               <Input
                 name="userName"
                 value={formData.userName}
@@ -56,7 +56,7 @@ const UserForm = ({
             </Col>
             {!isEditMode && (
               <Col md={6}>
-                <Label>Password</Label>
+                <Label>Password<span style={{ color: "red" }}>*</span></Label>
                 <Input
                   name="password"
                   type="password"
@@ -67,7 +67,7 @@ const UserForm = ({
               </Col>
             )}
             <Col md={6}>
-              <Label>Email</Label>
+              <Label>Email<span style={{ color: "red" }}>*</span></Label>
               <Input
                 name="email"
                 value={formData.email}
@@ -76,16 +76,30 @@ const UserForm = ({
               />
             </Col>
             <Col md={6}>
-              <Label>Mobile Number</Label>
+              <Label>Mobile Number<span style={{ color: "red" }}>*</span></Label>
               <Input
                 name="mobileNumber"
+                type="tel"
+                pattern="[0-9]*"
+                inputMode="numeric"
                 value={formData.mobileNumber}
-                onChange={onChange}
+                onChange={e => {
+                  // Only allow numbers
+                  const value = e.target.value.replace(/[^0-9]/g, "");
+                  onChange({
+                    ...e,
+                    target: {
+                      ...e.target,
+                      value,
+                    },
+                  });
+                }}
                 placeholder="Enter mobile number"
+                maxLength={10}
               />
             </Col>
             <Col md={6}>
-              <Label>Select Role</Label>
+              <Label>Select Role<span style={{ color: "red" }}>*</span></Label>
               <Select
                 classNamePrefix="select2-selection"
                 placeholder="Select role"
