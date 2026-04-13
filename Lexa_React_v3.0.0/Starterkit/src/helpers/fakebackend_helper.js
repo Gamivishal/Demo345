@@ -1,6 +1,7 @@
 import axios from "axios";
 import { del, get, post } from "./api_helper";
 import * as url from "./url_helper";
+import { getBlob, exportToExcel } from "./api_helper";
 
 // Reset Password API
 const resetPassword = async (username) => {
@@ -96,6 +97,16 @@ const postFakeLogin = async data => {
       "Login API call failed"
     )
   }
+};
+
+// Export users to Excel
+export const exportUsers = async (params = {}) => {
+  return await exportToExcel("/User/ExportToExcel", "Users.xlsx", { params });
+};
+
+// Export users to PDF
+export const exportUsersPdf = async (params = {}) => {
+  return await exportToExcel("/User/ExportToPdf", "Users.pdf", { params });
 };
 
 // using into ROle For Get value into Dropdown

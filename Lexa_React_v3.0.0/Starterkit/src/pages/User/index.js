@@ -9,6 +9,9 @@ import { setBreadcrumbItems } from "../../store/actions"
 import { deleteUserById, getRoleNames, getUserById, getUsersPages, saveUser } from "../../helpers/fakebackend_helper"
 import { showConfirm, showError, showSuccess } from "../../Pop_show/alertService"
 import UserForm from "./UserForm"
+import { exportUsers, exportUsersPdf } from "../../helpers/fakebackend_helper";
+
+
 
 const USER_LIST_SORT_COLUMN = "userName"
 const USER_LIST_SORT_DIR = "asc"
@@ -71,6 +74,58 @@ const Users = props => {
       setLoading(false)
     }
   }
+
+// new for export
+const handleExport = async () => {
+  try {
+    const response = await exportUsers({
+      start: 0,
+      length: 1000,
+      sortColumn,
+      sortColumnDir,
+    });
+
+    const url = window.URL.createObjectURL(response.data);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "Users.xlsx";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    window.URL.revokeObjectURL(url);
+  } catch (err) {
+    console.error("Export failed", err);
+  }
+};
+
+
+// pdf
+const handleExportPdf = async () => {
+  try {
+    const response = await exportUsersPdf({
+      start: 0,
+      length: 1000,
+      sortColumn,
+      sortColumnDir,
+    });
+
+    const url = window.URL.createObjectURL(response.data);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "Users.pdf";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    window.URL.revokeObjectURL(url);
+  } catch (err) {
+    console.error("PDF export failed", err);
+  }
+};
+
 
   useEffect(() => {
     props.setBreadcrumbItems("Users", breadcrumbItems)
@@ -325,6 +380,14 @@ const Users = props => {
                   <Button color="primary" type="button" onClick={() => navigate("/users/manage")}>
                      <i className="mdi mdi-plus me-1" />Add User
                   </Button>
+                  <Button color="success" className="me-2" onClick={handleExport}>
+  <i className="mdi mdi-file-excel me-1" />
+  Export Excel
+</Button>
+<Button color="danger" className="me-2" onClick={handleExportPdf}>
+  <i className="mdi mdi-file-pdf me-1" />
+  Export PDF
+</Button>
                 </div>
                 {error ? <Alert color="danger">{error}</Alert> : null}
                 {loading ? (
