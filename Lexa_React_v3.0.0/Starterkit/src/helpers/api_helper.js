@@ -1,5 +1,3 @@
-
-
 import axios from "axios";
 
 // Download a file (e.g., Excel) from the backend and trigger browser download
@@ -117,4 +115,30 @@ export async function getBlob(url, config = {}) {
     ...config,
     responseType: "blob",
   });
+}
+
+// UserDemo API helpers
+const USER_DEMO_BASE_URL = "/UserDemo";
+
+// Get paginated users
+export async function getUserDemoList({ start = 0, length = 10, sortColumnDir = "asc" }) {
+  const url = `${USER_DEMO_BASE_URL}/GetAllpage?start=${start}&length=${length}&sortColumnDir=${sortColumnDir}`;
+  return await get(url);
+}
+
+// Get user by ID
+export async function getUserDemoById(id) {
+  const url = `${USER_DEMO_BASE_URL}/GetById?id=${id}`;
+  return await get(url);
+}
+
+// Add or update user (with file upload)
+export async function saveUserDemo(formData) {
+  const url = `${USER_DEMO_BASE_URL}/Add`;
+  // formData should be FormData instance
+  return await axiosApi.post(url, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  }).then(res => res.data);
 }

@@ -1,7 +1,37 @@
+
 import axios from "axios";
 import { del, get, post } from "./api_helper";
 import * as url from "./url_helper";
 import { getBlob, exportToExcel } from "./api_helper";
+
+// UserDemo API helpers
+const USER_DEMO_BASE_URL = "https://localhost:7281/api/UserDemo";
+
+// Get paginated users
+export async function getUserDemoList({ start = 0, length = 10, sortColumnDir = "asc" }) {
+  const url = `${USER_DEMO_BASE_URL}/GetAllpage?start=${start}&length=${length}&sortColumnDir=${sortColumnDir}`;
+  const response = await axios.get(url);
+  return response.data;
+}
+
+// Get user by ID
+export async function getUserDemoById(id) {
+  const url = `${USER_DEMO_BASE_URL}/GetById?id=${id}`;
+  const response = await axios.get(url);
+  return response.data;
+}
+
+// Add or update user (with file upload)
+export async function saveUserDemo(formData) {
+  const url = `${USER_DEMO_BASE_URL}/Add`;
+  // formData should be FormData instance
+  const response = await axios.post(url, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+}
 
 // Reset Password API
 const resetPassword = async (username) => {
