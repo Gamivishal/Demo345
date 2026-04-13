@@ -92,7 +92,7 @@ const Header = props => {
           </div>
 
           <div className="float-end">
-            <form className="app-search d-none d-lg-inline-block">
+            {/* <form className="app-search d-none d-lg-inline-block">
               <div className="position-relative">
                 <input
                   type="text"
@@ -101,8 +101,8 @@ const Header = props => {
                 />
                 <span className="fa fa-search"></span>
               </div>
-            </form>
-            <LanguageDropdown />
+            </form> */}
+            {/* <LanguageDropdown /> */}
 
             <div className="dropdown d-none d-lg-inline-block">
               <button
@@ -152,7 +152,7 @@ const Header = props => {
                 </form>
               </div>
             </div>
-            <NotificationDropdown />
+            {/* <NotificationDropdown /> */}
             <ProfileMenu />
             <div className="dropdown d-inline-block">
               <button

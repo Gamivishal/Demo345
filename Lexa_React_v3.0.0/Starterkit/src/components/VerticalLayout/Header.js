@@ -108,7 +108,7 @@ const Header = props => {
                 className="d-inline-block"
               >
 
-                <div className="dropdown dropdown-topbar pt-3 mt-1 d-inline-block">
+                {/* <div className="dropdown dropdown-topbar pt-3 mt-1 d-inline-block">
 
                   <DropdownToggle
                     className="btn btn-light"
@@ -125,12 +125,12 @@ const Header = props => {
                     <DropdownItem tag="a" href="#">Separated link</DropdownItem>
                   </DropdownMenu>
 
-                </div>
+                </div> */}
               </Dropdown>
             </div>
           </div>
           <div className="d-flex">
-            <form className="app-search d-none d-lg-block">
+            {/* <form className="app-search d-none d-lg-block">
               <div className="position-relative">
                 <input
                   type="text"
@@ -139,7 +139,7 @@ const Header = props => {
                 />
                 <span className="fa fa-search"></span>
               </div>
-            </form>
+            </form> */}
             <div className="dropdown d-inline-block d-lg-none ms-2">
               <button
                 onClick={() => {
@@ -178,7 +178,7 @@ const Header = props => {
                 </form>
               </div>
             </div>
-            <LanguageDropdown />
+            {/* <LanguageDropdown /> */}
             <div className="dropdown d-none d-lg-inline-block">
               <button
                 type="button"
@@ -191,7 +191,7 @@ const Header = props => {
                 <i className="mdi mdi-fullscreen font-size-24"></i>
               </button>
             </div>
-            <NotificationDropdown />
+            {/* <NotificationDropdown /> */}
             <ProfileMenu />
             <div
               onClick={() => {
