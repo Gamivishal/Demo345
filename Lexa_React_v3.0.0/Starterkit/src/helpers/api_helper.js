@@ -142,3 +142,18 @@ export async function saveUserDemo(formData) {
     },
   }).then(res => res.data);
 }
+
+// Property API helpers
+const PROPERTY_BASE_URL = "/Property";
+
+export async function getPropertyList({ start = 0, length = 10, sortColumnDir = "asc" }) {
+  const url = `${PROPERTY_BASE_URL}/GetAllpage?start=${start}&length=${length}&sortColumnDir=${sortColumnDir}`;
+  return await get(url);
+}
+
+export async function saveOrUpdateProperty(formData) {
+  const url = `${PROPERTY_BASE_URL}/SaveOrUpdate`;
+  return await axiosApi.post(url, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  }).then(res => res.data);
+}
